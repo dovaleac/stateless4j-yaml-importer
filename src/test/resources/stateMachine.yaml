@@ -1,0 +1,47 @@
+className: ClassName
+delegateInterfaceName: Delegate
+states:
+  className: StateClassName
+  elements:
+    - name: State1
+      onEntry:
+        - name: entry1
+      onExit:
+        - exit1
+    - name: State2
+      onEntry:
+        - name: entry21
+        - name: entry22
+    - name: State3
+      onExit:
+        - exit31
+        - exit32
+    - name: State4
+      onExit:
+        - exit31
+        - exit1
+transitions:
+  - from: State1
+    to: State2
+    trigger: FLY
+  - from: State2
+    to: State4
+    trigger: JUMP
+  - from: State3
+    to: State4
+    trigger: JUMP
+  - from: State1
+    to: State3
+    trigger: FALL
+    params:
+      - className: Integer
+        variableName: height
+  - from: State2
+    to: State3
+    trigger: WALK
+    params:
+      - className: String
+        variableName: param1
+      - className: Integer
+        variableName: param2
+
