@@ -1,5 +1,7 @@
 package com.github.dovaleac.jackson;
 
+import java.util.Objects;
+
 public class OnEntry {
   private String name;
 
@@ -19,13 +21,17 @@ public class OnEntry {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
 
-    OnEntry onEntry = (OnEntry) o;
+    OnEntry onEntry = (OnEntry) obj;
 
-    return name != null ? name.equals(onEntry.name) : onEntry.name == null;
+    return Objects.equals(name, onEntry.name);
   }
 
   @Override
@@ -35,8 +41,8 @@ public class OnEntry {
 
   @Override
   public String toString() {
-    return "OnEntry{" +
-        "name='" + name + '\'' +
-        '}';
+    return "OnEntry{"
+        + "name='" + name + '\''
+        + '}';
   }
 }

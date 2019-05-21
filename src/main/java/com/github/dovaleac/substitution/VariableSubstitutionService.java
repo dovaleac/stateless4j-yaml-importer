@@ -6,11 +6,11 @@ import java.util.Map;
 
 public interface VariableSubstitutionService {
 
-    String VARIABLE_SUBSTITUTION_REGEX = "(\\$\\{(\\w+)\\})";
+  String VARIABLE_SUBSTITUTION_REGEX = "(\\$\\{(\\w+)\\})";
 
-    String replaceAll(String text, Map<String, ?> variables);
+  String replaceAll(String text, Map<String, ?> variables);
 
-    static VariableSubstitutionService get() {
-        return new VariableSubstitutionServiceImpl();
-    }
+  static VariableSubstitutionService get() {
+    return new VariableSubstitutionServiceImpl();
+  }
 }

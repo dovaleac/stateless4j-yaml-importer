@@ -1,5 +1,7 @@
 package com.github.dovaleac.jackson;
 
+import java.util.Objects;
+
 public class Param {
   private String className;
   private String variableName;
@@ -29,15 +31,20 @@ public class Param {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    Param param = (Param) o;
-
-    if (className != null ? !className.equals(param.className) : param.className != null)
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
-    return variableName != null ? variableName.equals(param.variableName) : param.variableName == null;
+    }
+
+    Param param = (Param) obj;
+
+    if (!Objects.equals(className, param.className)) {
+      return false;
+    }
+    return Objects.equals(variableName, param.variableName);
   }
 
   @Override
@@ -49,9 +56,9 @@ public class Param {
 
   @Override
   public String toString() {
-    return "Param{" +
-        "className='" + className + '\'' +
-        ", variableName='" + variableName + '\'' +
-        '}';
+    return "Param{"
+        + "className='" + className + '\''
+        + ", variableName='" + variableName + '\''
+        + '}';
   }
 }

@@ -1,6 +1,7 @@
 package com.github.dovaleac.jackson;
 
 import java.util.List;
+import java.util.Objects;
 
 public class States {
   private String className;
@@ -31,15 +32,20 @@ public class States {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    States states = (States) o;
-
-    if (className != null ? !className.equals(states.className) : states.className != null)
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
-    return elements != null ? elements.equals(states.elements) : states.elements == null;
+    }
+
+    States states = (States) obj;
+
+    if (!Objects.equals(className, states.className)) {
+      return false;
+    }
+    return Objects.equals(elements, states.elements);
   }
 
   @Override
@@ -51,9 +57,9 @@ public class States {
 
   @Override
   public String toString() {
-    return "States{" +
-        "className='" + className + '\'' +
-        ", elements=" + elements +
-        '}';
+    return "States{"
+        + "className='" + className + '\''
+        + ", elements=" + elements
+        + '}';
   }
 }

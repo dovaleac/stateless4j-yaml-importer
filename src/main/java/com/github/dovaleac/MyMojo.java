@@ -27,55 +27,42 @@ import java.io.IOException;
  * Goal which touches a timestamp file.
  *
  * @goal touch
- * 
  * @phase process-sources
  */
-public class MyMojo
-    extends AbstractMojo
-{
-    /**
-     * Location of the file.
-     * @parameter expression="${project.build.directory}"
-     * @required
-     */
-    private File outputDirectory;
+public class MyMojo extends AbstractMojo {
 
-    public void execute()
-        throws MojoExecutionException
-    {
-        File f = outputDirectory;
+  /**
+   * Location of the file.
+   *
+   * @parameter expression="${project.build.directory}"
+   * @required
+   */
+  private File outputDirectory;
 
-        if ( !f.exists() )
-        {
-            f.mkdirs();
-        }
+  public void execute() throws MojoExecutionException {
+    File file = outputDirectory;
 
-        File touch = new File( f, "touch.txt" );
-
-        FileWriter w = null;
-        try
-        {
-            w = new FileWriter( touch );
-
-            w.write( "touch.txt" );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Error creating file " + touch, e );
-        }
-        finally
-        {
-            if ( w != null )
-            {
-                try
-                {
-                    w.close();
-                }
-                catch ( IOException e )
-                {
-                    // ignore
-                }
-            }
-        }
+    if (!file.exists()) {
+      file.mkdirs();
     }
+
+    File touch = new File(file, "touch.txt");
+
+    FileWriter fileWriter = null;
+    try {
+      fileWriter = new FileWriter(touch);
+
+      fileWriter.write("touch.txt");
+    } catch (IOException ex) {
+      throw new MojoExecutionException("Error creating file " + touch, ex);
+    } finally {
+      if (fileWriter != null) {
+        try {
+          fileWriter.close();
+        } catch (IOException ex) {
+          // ignore
+        }
+      }
+    }
+  }
 }

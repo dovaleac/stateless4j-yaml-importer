@@ -1,6 +1,7 @@
 package com.github.dovaleac.jackson;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Transition {
   private String from;
@@ -51,16 +52,26 @@ public class Transition {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
 
-    Transition that = (Transition) o;
+    Transition that = (Transition) obj;
 
-    if (from != null ? !from.equals(that.from) : that.from != null) return false;
-    if (to != null ? !to.equals(that.to) : that.to != null) return false;
-    if (trigger != null ? !trigger.equals(that.trigger) : that.trigger != null) return false;
-    return params != null ? params.equals(that.params) : that.params == null;
+    if (!Objects.equals(from, that.from)) {
+      return false;
+    }
+    if (!Objects.equals(to, that.to)) {
+      return false;
+    }
+    if (!Objects.equals(trigger, that.trigger)) {
+      return false;
+    }
+    return Objects.equals(params, that.params);
   }
 
   @Override
@@ -74,11 +85,11 @@ public class Transition {
 
   @Override
   public String toString() {
-    return "Transition{" +
-        "from='" + from + '\'' +
-        ", to='" + to + '\'' +
-        ", trigger='" + trigger + '\'' +
-        ", params=" + params +
-        '}';
+    return "Transition{"
+        + "from='" + from + '\''
+        + ", to='" + to + '\''
+        + ", trigger='" + trigger + '\''
+        + ", params=" + params
+        + '}';
   }
 }

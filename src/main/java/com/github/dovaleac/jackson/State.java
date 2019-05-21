@@ -1,6 +1,7 @@
 package com.github.dovaleac.jackson;
 
 import java.util.List;
+import java.util.Objects;
 
 public class State {
   private String name;
@@ -41,17 +42,23 @@ public class State {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
 
-    State state = (State) o;
+    State state = (State) obj;
 
-    if (name != null ? !name.equals(state.name) : state.name != null) return false;
-    if (onEntry != null ? !onEntry.equals(state.onEntry) : state.onEntry != null) return false;
-    if (onExit != null ? !onExit.equals(state.onExit) : state.onExit != null) return false;
-
-    return true;
+    if (!Objects.equals(name, state.name)) {
+      return false;
+    }
+    if (!Objects.equals(onEntry, state.onEntry)) {
+      return false;
+    }
+    return Objects.equals(onExit, state.onExit);
   }
 
   @Override
@@ -64,10 +71,10 @@ public class State {
 
   @Override
   public String toString() {
-    return "State{" +
-        "name='" + name + '\'' +
-        ", onEntry=" + onEntry +
-        ", onExit=" + onExit +
-        '}';
+    return "State{"
+        + "name='" + name + '\''
+        + ", onEntry=" + onEntry
+        + ", onExit=" + onExit
+        + '}';
   }
 }

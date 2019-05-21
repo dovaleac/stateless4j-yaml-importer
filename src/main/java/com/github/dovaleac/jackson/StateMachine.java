@@ -1,6 +1,7 @@
 package com.github.dovaleac.jackson;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StateMachine {
   private String className;
@@ -53,18 +54,26 @@ public class StateMachine {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    StateMachine that = (StateMachine) o;
-
-    if (className != null ? !className.equals(that.className) : that.className != null)
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
-    if (delegateInterfaceName != null ? !delegateInterfaceName.equals(that.delegateInterfaceName) : that.delegateInterfaceName != null)
+    }
+
+    StateMachine that = (StateMachine) obj;
+
+    if (!Objects.equals(className, that.className)) {
       return false;
-    if (states != null ? !states.equals(that.states) : that.states != null) return false;
-    return transitions != null ? transitions.equals(that.transitions) : that.transitions == null;
+    }
+    if (!Objects.equals(delegateInterfaceName, that.delegateInterfaceName)) {
+      return false;
+    }
+    if (!Objects.equals(states, that.states)) {
+      return false;
+    }
+    return Objects.equals(transitions, that.transitions);
   }
 
   @Override
@@ -78,11 +87,11 @@ public class StateMachine {
 
   @Override
   public String toString() {
-    return "StateMachine{" +
-        "className='" + className + '\'' +
-        ", delegateInterfaceName='" + delegateInterfaceName + '\'' +
-        ", states=" + states +
-        ", transitions=" + transitions +
-        '}';
+    return "StateMachine{"
+        + "className='" + className + '\''
+        + ", delegateInterfaceName='" + delegateInterfaceName + '\''
+        + ", states=" + states
+        + ", transitions=" + transitions
+        + '}';
   }
 }
