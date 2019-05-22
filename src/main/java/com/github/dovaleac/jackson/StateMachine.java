@@ -9,18 +9,21 @@ public class StateMachine {
   private String delegateInterfaceName;
   private States states;
   private List<Transition> transitions;
+  private List<TriggerWithParameters> triggersWithParameters;
 
   public StateMachine() {
   }
 
   public StateMachine(String className, String triggerClassName, String delegateInterfaceName,
       States states,
-      List<Transition> transitions) {
+      List<Transition> transitions,
+      List<TriggerWithParameters> triggersWithParameters) {
     this.className = className;
     this.triggerClassName = triggerClassName;
     this.delegateInterfaceName = delegateInterfaceName;
     this.states = states;
     this.transitions = transitions;
+    this.triggersWithParameters = triggersWithParameters;
   }
 
   public String getClassName() {
@@ -29,42 +32,6 @@ public class StateMachine {
 
   public void setClassName(String className) {
     this.className = className;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-
-    StateMachine that = (StateMachine) obj;
-
-    if (!Objects.equals(className, that.className)) {
-      return false;
-    }
-    if (!Objects.equals(triggerClassName, that.triggerClassName)) {
-      return false;
-    }
-    if (!Objects.equals(delegateInterfaceName, that.delegateInterfaceName)) {
-      return false;
-    }
-    if (!Objects.equals(states, that.states)) {
-      return false;
-    }
-    return Objects.equals(transitions, that.transitions);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = className != null ? className.hashCode() : 0;
-    result = 31 * result + (triggerClassName != null ? triggerClassName.hashCode() : 0);
-    result = 31 * result + (delegateInterfaceName != null ? delegateInterfaceName.hashCode() : 0);
-    result = 31 * result + (states != null ? states.hashCode() : 0);
-    result = 31 * result + (transitions != null ? transitions.hashCode() : 0);
-    return result;
   }
 
   public String getTriggerClassName() {
@@ -99,13 +66,65 @@ public class StateMachine {
     this.transitions = transitions;
   }
 
+  public List<TriggerWithParameters> getTriggersWithParameters() {
+    return triggersWithParameters;
+  }
+
+  public void setTriggersWithParameters(
+      List<TriggerWithParameters> triggersWithParameters) {
+    this.triggersWithParameters = triggersWithParameters;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    StateMachine that = (StateMachine) obj;
+
+    if (!Objects.equals(className, that.className)) {
+      return false;
+    }
+    if (!Objects.equals(triggerClassName, that.triggerClassName)) {
+      return false;
+    }
+    if (!Objects.equals(delegateInterfaceName, that.delegateInterfaceName)) {
+      return false;
+    }
+    if (!Objects.equals(states, that.states)) {
+      return false;
+    }
+    if (!Objects.equals(transitions, that.transitions)) {
+      return false;
+    }
+    return Objects.equals(triggersWithParameters, that.triggersWithParameters);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = className != null ? className.hashCode() : 0;
+    result = 31 * result + (triggerClassName != null ? triggerClassName.hashCode() : 0);
+    result = 31 * result + (delegateInterfaceName != null ? delegateInterfaceName.hashCode() : 0);
+    result = 31 * result + (states != null ? states.hashCode() : 0);
+    result = 31 * result + (transitions != null ? transitions.hashCode() : 0);
+    result = 31 * result + (triggersWithParameters != null ? triggersWithParameters.hashCode() : 0);
+    return result;
+  }
+
   @Override
   public String toString() {
     return "StateMachine{"
         + "className='" + className + '\''
+        + ", triggerClassName='" + triggerClassName + '\''
         + ", delegateInterfaceName='" + delegateInterfaceName + '\''
         + ", states=" + states
         + ", transitions=" + transitions
+        + ", triggersWithParameters=" + triggersWithParameters
         + '}';
   }
+
 }

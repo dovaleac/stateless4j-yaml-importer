@@ -34,16 +34,20 @@ public class JacksonServiceTest {
                     new State(
                         "State4", null, Arrays.asList("exit31", "exit1")))),
             Arrays.asList(
-                new Transition("State1", "State2", "FLY", null),
-                new Transition("State2", "State4", "JUMP", null),
-                new Transition("State3", "State4", "JUMP", null),
+                new Transition("State1", "State2", "FLY"),
+                new Transition("State2", "State4", "JUMP"),
+                new Transition("State3", "State4", "JUMP"),
                 new Transition(
-                    "State1", "State3", "FALL", Arrays.asList(new Param("Integer", "height"))),
+                    "State1", "State3", "FALL"),
                 new Transition(
                     "State2",
                     "State3",
-                    "WALK",
-                    Arrays.asList(new Param("String", "param1"), new Param("Integer", "param2")))));
+                    "WALK")),
+            Arrays.asList(
+                new TriggerWithParameters("FALL", Arrays.asList(new Param("Integer", "height"))),
+                new TriggerWithParameters("WALK", Arrays.asList(new Param("String", "param1"), new Param("Integer", "param2")))
+            )
+        );
   }
 
   @Test

@@ -34,15 +34,17 @@ transitions:
   - from: State1
     to: State3
     trigger: FALL
-    params:
-      - className: Integer
-        variableName: height
   - from: State2
     to: State3
     trigger: WALK
+triggersWithParameters:
+  - trigger: FALL
+    params:
+      - className: Integer
+        variableName: height
+  - trigger: WALK
     params:
       - className: String
         variableName: param1
       - className: Integer
         variableName: param2
-
