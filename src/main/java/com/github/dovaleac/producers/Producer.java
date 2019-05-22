@@ -7,5 +7,6 @@ import java.io.IOException;
 
 public interface Producer {
   String produceState(String packageName, States states) throws IOException;
+
   String produceTrigger(String packageName, StateMachine stateMachine) throws IOException;
 }

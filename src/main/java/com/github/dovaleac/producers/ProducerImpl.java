@@ -12,12 +12,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ProducerImpl implements Producer {
 
-  public static final Path STATE_PATH = Paths.get("src", "main", "resources", "templates", "State" +
-      ".txt");
+  public static final Path STATE_PATH = Paths.get("src", "main", "resources",
+      "templates", "State.txt");
   public static final Path TRIGGER_PATH = Paths.get("src", "main", "resources", "templates",
       "Trigger.txt");
 
