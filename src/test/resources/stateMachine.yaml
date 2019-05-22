@@ -1,4 +1,5 @@
 className: ClassName
+triggerClassName: Trigger
 delegateInterfaceName: Delegate
 states:
   className: StateClassName

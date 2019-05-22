@@ -18,6 +18,7 @@ public class JacksonServiceTest {
     expected =
         new StateMachine(
             "ClassName",
+            "Trigger",
             "Delegate",
             new States(
                 "StateClassName",
