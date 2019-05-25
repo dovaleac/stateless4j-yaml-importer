@@ -24,13 +24,15 @@ public class JacksonServiceTest {
                 "StateClassName",
                 Arrays.asList(
                     new State(
-                        "State1", Arrays.asList(new OnEntry("entry1")), Arrays.asList("exit1")),
+                        "State1", Arrays.asList(new OnEntry("entry1", null)), Arrays.asList(
+                            "exit1")),
                     new State(
-                        "State2",
-                        Arrays.asList(new OnEntry("entry21"), new OnEntry("entry22")),
+                        "State2", null, Arrays.asList("exit31", "exit32")),
+                    new State(
+                        "State3",
+                        Arrays.asList(new OnEntry("entry21", "FALL"), new OnEntry("entry22",
+                                "WALK")),
                         null),
-                    new State(
-                        "State3", null, Arrays.asList("exit31", "exit32")),
                     new State(
                         "State4", null, Arrays.asList("exit31", "exit1")))),
             Arrays.asList(

@@ -10,13 +10,15 @@ states:
       onExit:
         - exit1
     - name: State2
-      onEntry:
-        - name: entry21
-        - name: entry22
-    - name: State3
       onExit:
         - exit31
         - exit32
+    - name: State3
+      onEntry:
+        - name: entry21
+          from: FALL
+        - name: entry22
+          from: WALK
     - name: State4
       onExit:
         - exit31
