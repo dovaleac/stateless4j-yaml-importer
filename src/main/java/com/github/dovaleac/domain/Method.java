@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Method {
@@ -25,6 +26,14 @@ public class Method {
   public Method(String name) {
     this.name = name;
     this.params = new ArrayList<>(0);
+  }
+
+  public String generateMethodDefinition() {
+    return name + '('
+        + params.stream()
+            .map(Param::getParamDefinition)
+            .collect(Collectors.joining(", "))
+        + ");";
   }
 
   public String getName() {

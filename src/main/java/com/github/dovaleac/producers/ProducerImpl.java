@@ -21,6 +21,8 @@ public class ProducerImpl implements Producer {
       Paths.get("src", "main", "resources", "templates", "State.txt");
   public static final Path TRIGGER_PATH =
       Paths.get("src", "main", "resources", "templates", "Trigger.txt");
+  public static final Path INTERFACE_PATH =
+      Paths.get("src", "main", "resources", "templates", "Interface.txt");
 
   @Override
   public String produceState(String packageName, States states) throws IOException {
@@ -104,6 +106,27 @@ public class ProducerImpl implements Producer {
         .flatMap(Collection::stream)
         .distinct()
         .map(Method::new);
+  }
+
+  @Override
+  public String produceInterface(String packageName, StateMachine stateMachine)
+      throws IOException, ValidationException {
+    Stream<Method> onEntryMethods = gatherOnEntryMethods(stateMachine);
+    Stream<Method> onExitMethods = gatherOnExitMethods(stateMachine);
+
+    String methods = Stream.concat(onEntryMethods, onExitMethods)
+        .distinct()
+        .map(Method::generateMethodDefinition)
+        .collect(Collectors.joining("\n\n  "));
+
+    String original = Files.lines(INTERFACE_PATH).collect(Collectors.joining("\n"));
+
+    Map<String, String> substitutions =
+        Map.of("package", packageName,
+            "delegateInterfaceName", stateMachine.getDelegateInterfaceName(),
+            "methods", methods);
+
+    return VariableSubstitutionService.get().replaceAll(original, substitutions);
   }
 
   private RuntimeException uncheckValidationException(String message, String name) {

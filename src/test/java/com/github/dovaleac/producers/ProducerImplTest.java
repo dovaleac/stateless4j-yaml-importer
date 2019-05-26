@@ -89,4 +89,29 @@ public class ProducerImplTest {
     assertTrue(expected.containsAll(actual));
     assertEquals(expected.size(), actual.size());
   }
+
+  @Test
+  public void delegate() throws Exception {
+
+    String actual = new ProducerImpl().produceInterface(packageName, stateMachine);
+
+    String expected =
+        "package com.github.dovaleac;\n"
+            + "\n"
+            + "public interface Delegate {\n"
+            + "  entry1();\n"
+            + "\n"
+            + "  entry21(Integer height);\n"
+            + "\n"
+            + "  entry22(String param1, Integer param2);\n"
+            + "\n"
+            + "  exit1();\n"
+            + "\n"
+            + "  exit31();\n"
+            + "\n"
+            + "  exit32();\n"
+            + "}";
+
+    assertEquals(expected, actual);
+  }
 }

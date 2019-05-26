@@ -16,4 +16,7 @@ public interface Producer {
   Stream<Method> gatherOnEntryMethods(StateMachine stateMachine) throws ValidationException;
 
   Stream<Method> gatherOnExitMethods(StateMachine stateMachine);
+
+  String produceInterface(String packageName, StateMachine stateMachine)
+      throws IOException, ValidationException;
 }

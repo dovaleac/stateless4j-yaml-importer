@@ -14,6 +14,10 @@ public class Param {
     this.variableName = variableName;
   }
 
+  public String getParamDefinition() {
+    return String.format("%s %s", className, variableName);
+  }
+
   public String getClassName() {
     return className;
   }
