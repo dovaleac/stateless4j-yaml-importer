@@ -1,11 +1,13 @@
 package com.github.dovaleac.producers;
 
 import com.github.dovaleac.domain.Method;
+import com.github.dovaleac.domain.StateConfiguration;
 import com.github.dovaleac.exceptions.ValidationException;
 import com.github.dovaleac.jackson.StateMachine;
 import com.github.dovaleac.jackson.States;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public interface Producer {
@@ -19,4 +21,7 @@ public interface Producer {
 
   String produceInterface(String packageName, StateMachine stateMachine)
       throws IOException, ValidationException;
+
+  Stream<StateConfiguration> produceStateConfigurations(StateMachine stateMachine,
+      Map<String, Method> onEntry, Map<String, Method> onExit);
 }

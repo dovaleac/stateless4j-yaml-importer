@@ -11,20 +11,30 @@ import java.util.stream.Stream;
 
 public class Method {
   private final String name;
+  private final String from;
   private final List<Param> params;
 
-  public Method(String name, List<Param> params) {
+  public Method(String name, String from, List<Param> params) {
     this.name = name;
+    this.from = from;
     this.params = params;
   }
 
-  public Method(String name, Param... params) {
+  public Method(String name, String from, Param... params) {
     this.name = name;
+    this.from = from;
     this.params = Arrays.asList(params);
+  }
+
+  public Method(String name, String from) {
+    this.name = name;
+    this.from = from;
+    this.params = new ArrayList<>(0);
   }
 
   public Method(String name) {
     this.name = name;
+    this.from = null;
     this.params = new ArrayList<>(0);
   }
 
@@ -44,10 +54,6 @@ public class Method {
     return params.stream();
   }
 
-  public Method withParams(List<Param> params) {
-    return new Method(name, params);
-  }
-
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -62,12 +68,16 @@ public class Method {
     if (!Objects.equals(name, method.name)) {
       return false;
     }
+    if (!Objects.equals(from, method.from)) {
+      return false;
+    }
     return Objects.equals(params, method.params);
   }
 
   @Override
   public int hashCode() {
     int result = name != null ? name.hashCode() : 0;
+    result = 31 * result + (from != null ? from.hashCode() : 0);
     result = 31 * result + (params != null ? params.hashCode() : 0);
     return result;
   }
@@ -76,6 +86,7 @@ public class Method {
   public String toString() {
     return "Method{"
         + "name='" + name + '\''
+        + ", from='" + from + '\''
         + ", params=" + params
         + '}';
   }
