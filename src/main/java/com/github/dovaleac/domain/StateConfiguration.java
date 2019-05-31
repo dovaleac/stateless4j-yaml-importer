@@ -79,8 +79,7 @@ public class StateConfiguration {
               boolean hasFrom = from != null;
               boolean hasParams = numParams > 0;
 
-              return OnEntryTemplateSelection.getByCase(hasFrom, hasParams)
-                  .getTemplatizer()
+              return OnEntryTemplateSelection.getTemplatizer(hasFrom, hasParams)
                   .apply(new OnEntryTemplateConfig(tab))
                   .apply(onEntryCalculationParams);
 

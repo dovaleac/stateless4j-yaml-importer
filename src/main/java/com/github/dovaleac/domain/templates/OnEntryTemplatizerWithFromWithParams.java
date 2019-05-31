@@ -10,8 +10,8 @@ import java.util.stream.IntStream;
 public class OnEntryTemplatizerWithFromWithParams extends OnEntryTemplatizer {
   private static final String TEMPLATE =
       "${tab3}.onEntryFrom(\n"
-          + "${tab4}new TriggerWithParameters${numParams}<>(\n"
-          + "${tab5}${triggerClassName}.${from}, ${paramClasses}),\n"
+          + "${tab4}new TriggerWithParameters${numParams}<>("
+          + "${triggerClassName}.${from}, ${paramClasses}),\n"
           + "${tab4}${paramQualifiedParams} -> {\n"
           + "${tab4}${delegateVariableName}.${methodName}${paramUnqualifiedParams};\n"
           + "${tab3}})";

@@ -8,10 +8,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class OnEntryTemplatizerNoFromWithParams extends OnEntryTemplatizer {
+  /*  .onEntry(new Action1<Transition<Trigger, State>, Object[]>() {
+    Transition<Trigger, State> trans, Object[] args) {
+     delegate.method((Param{className='Integer', variableName='intValue'}) args[0];
+    }})*/
   private static final String TEMPLATE =
       "${tab3}.onEntry(new Action${numParams}<${qualifiedTransition}, Object[]>() {\n"
-      + "${tab4}>, Object[]>() {${qualifiedTransition} trans, Object[] args) {\n"
-      + "${tab5}${delegateVariableName}.${methodName}(${paramList};\n"
+      + "${tab4}public void doIt(${qualifiedTransition} trans, Object[] args) {\n"
+      + "${tab5}${delegateVariableName}.${methodName}(${paramList});\n"
       + "${tab4}}})";
 
   public OnEntryTemplatizerNoFromWithParams(String tab) {
@@ -26,7 +30,8 @@ public class OnEntryTemplatizerNoFromWithParams extends OnEntryTemplatizer {
             + params.getStateClassName() + ">",
         "paramList", IntStream.range(0, params.getNumParams())
             .boxed()
-            .map(integer -> "(" + paramList.get(integer) + ") args[" + integer + "]")
+            .map(integer -> "(" + paramList.get(integer).getClassName()
+                + ") args[" + integer + "]")
             .collect(Collectors.joining(", "))
     );
   }
