@@ -1,5 +1,8 @@
 package com.github.dovaleac.domain;
 
+import com.github.dovaleac.domain.templates.OnEntryCalculationParams;
+import com.github.dovaleac.domain.templates.OnEntryTemplateConfig;
+import com.github.dovaleac.domain.templates.OnEntryTemplateSelection;
 import com.github.dovaleac.jackson.Param;
 
 import java.util.List;
@@ -63,176 +66,26 @@ public class StateConfiguration {
               String from = method.getFrom();
               String methodName = method.getName();
 
-              if (from == null) {
-                if (numParams == 0) {
-                  return onEntryNoParamsNoFrom(tab, delegateVariableName, methodName);
-                } else {
-                  return onEntryWithParamsNoFrom(
-                      tab,
-                      delegateVariableName,
-                      methodName,
-                      method.getParams(),
-                      numParams,
-                      triggerClassName,
-                      stateClassName);
-                }
-              } else {
-                if (numParams == 0) {
-                  return onEntryNoParamsWithFrom(tab, delegateVariableName, methodName, from);
-                } else {
-                  return onEntryWithParamsWithFrom(
-                      tab,
-                      delegateVariableName,
-                      methodName,
-                      method.getParams(),
-                      numParams,
-                      triggerClassName,
-                      from);
-                }
-              }
+              OnEntryCalculationParams onEntryCalculationParams = new OnEntryCalculationParams(
+                  delegateVariableName,
+                  triggerClassName,
+                  stateClassName,
+                  numParams,
+                  from,
+                  methodName,
+                  method.getParams()
+              );
+
+              boolean hasFrom = from != null;
+              boolean hasParams = numParams > 0;
+
+              return OnEntryTemplateSelection.getByCase(hasFrom, hasParams)
+                  .getTemplatizer()
+                  .apply(new OnEntryTemplateConfig("  "))
+                  .apply(onEntryCalculationParams);
+
             })
         .collect(Collectors.joining("\n"));
-  }
-
-  private String onEntryWithParamsWithFrom(
-      String tab,
-      String delegateVariableName,
-      String methodName,
-      Stream<Param> params,
-      int paramSize,
-      String triggerClassName,
-      String from) {
-
-    List<Param> paramList = params.collect(Collectors.toList());
-
-    String paramClasses =
-        paramList.stream()
-            .map(Param::getClassName)
-            .map(className -> className + ".class")
-            .collect(Collectors.joining(", "));
-
-    String paramQualifiedParams =
-        "("
-            + paramList.stream().map(Param::getParamDefinition).collect(Collectors.joining(", "))
-            + ")";
-
-    String paramUnqualifiedParams =
-        "("
-            + paramList.stream().map(Param::getVariableName).collect(Collectors.joining(", "))
-            + ")";
-
-    return tab
-        + tab
-        + tab
-        + ".onEntryFrom(\n"
-        + tab
-        + tab
-        + tab
-        + tab
-        + "new TriggerWithParameters"
-        + paramSize
-        + "<>(\n"
-        + tab
-        + tab
-        + tab
-        + tab
-        + tab
-        + triggerClassName
-        + "."
-        + from
-        + ", "
-        + paramClasses
-        + "),\n"
-        + tab
-        + tab
-        + tab
-        + tab
-        + paramQualifiedParams
-        + " -> {\n"
-        + tab
-        + tab
-        + tab
-        + tab
-        + delegateVariableName
-        + "."
-        + methodName
-        + paramUnqualifiedParams
-        + ";\n"
-        + tab
-        + tab
-        + tab
-        + "})";
-  }
-
-  private String onEntryNoParamsWithFrom(
-      String tab, String delegateVariableName, String methodName, String from) {
-    return tab
-        + tab
-        + tab
-        + ".onEntryFrom("
-        + from
-        + ", "
-        + delegateVariableName
-        + "::"
-        + methodName
-        + ")";
-  }
-
-  private String onEntryWithParamsNoFrom(
-      String tab,
-      String delegateVariableName,
-      String methodName,
-      Stream<Param> params,
-      int paramSize,
-      String triggerClassName,
-      String stateClassName) {
-
-    String qualifiedTransition = "Transition<" + triggerClassName + ", " + stateClassName + ">";
-
-    List<Param> paramList = params.collect(Collectors.toList());
-
-    return tab
-        + tab
-        + tab
-        + ".onEntry(new Action"
-        + paramSize
-        + "<"
-        + qualifiedTransition
-        + ", "
-        + "Object[]>() {"
-        + "\n"
-        + tab
-        + tab
-        + tab
-        + tab
-        + ">, Object[]>() {"
-        + qualifiedTransition
-        + " trans, Object[] args) {"
-        + "\n"
-        + tab
-        + tab
-        + tab
-        + tab
-        + tab
-        + delegateVariableName
-        + "."
-        + methodName
-        + "("
-        + IntStream.range(0, paramSize)
-            .boxed()
-            .map(integer -> "(" + paramList.get(integer) + ") args[" + integer + "]")
-            .collect(Collectors.joining(", "))
-        + ";"
-        + "\n"
-        + tab
-        + tab
-        + tab
-        + tab
-        + "}})";
-  }
-
-  private String onEntryNoParamsNoFrom(String tab, String delegateVariableName, String methodName) {
-    return tab + tab + tab + ".onEntry(() -> " + delegateVariableName + "." + methodName + "())";
   }
 
   String produceOnExit(String tab, String delegateVariableName) {
