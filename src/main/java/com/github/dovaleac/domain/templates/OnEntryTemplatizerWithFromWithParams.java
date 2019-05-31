@@ -3,16 +3,25 @@ package com.github.dovaleac.domain.templates;
 import com.github.dovaleac.jackson.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class OnEntryTemplatizerWithFromWithParams extends OnEntryTemplatizer {
+  private static final String TEMPLATE =
+      "${tab3}.onEntryFrom(\n"
+          + "${tab4}new TriggerWithParameters${numParams}<>(\n"
+          + "${tab5}${triggerClassName}.${from}, ${paramClasses}),\n"
+          + "${tab4}${paramQualifiedParams} -> {\n"
+          + "${tab4}${delegateVariableName}.${methodName}${paramUnqualifiedParams};\n"
+          + "${tab3}})";
+
   public OnEntryTemplatizerWithFromWithParams(String tab) {
-    super(tab);
+    super(tab, TEMPLATE);
   }
 
   @Override
-  public String apply(OnEntryCalculationParams params) {
+  protected Map<String, Object> extraVariables(OnEntryCalculationParams params) {
 
     List<Param> paramList = params.getParams().collect(Collectors.toList());
 
@@ -32,30 +41,10 @@ public class OnEntryTemplatizerWithFromWithParams extends OnEntryTemplatizer {
             + paramList.stream().map(Param::getVariableName).collect(Collectors.joining(", "))
             + ")";
 
-    return severalTabs(3)
-        + ".onEntryFrom(\n"
-        + severalTabs(4)
-        + "new TriggerWithParameters"
-        + params.getNumParams()
-        + "<>(\n"
-        + severalTabs(5)
-        + params.getTriggerClassName()
-        + "."
-        + params.getFrom()
-        + ", "
-        + paramClasses
-        + "),\n"
-        + severalTabs(4)
-        + paramQualifiedParams
-        + " -> {\n"
-        + severalTabs(4)
-        + params.getDelegateVariableName()
-        + "."
-        + params.getMethodName()
-        + paramUnqualifiedParams
-        + ";\n"
-        + severalTabs(3)
-        + "})";
-
+    return Map.of(
+        "from", params.getFrom(),
+        "paramClasses", paramClasses,
+        "paramQualifiedParams", paramQualifiedParams,
+        "paramUnqualifiedParams", paramUnqualifiedParams);
   }
 }

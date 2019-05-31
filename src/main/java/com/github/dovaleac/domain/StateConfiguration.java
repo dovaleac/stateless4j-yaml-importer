@@ -81,7 +81,7 @@ public class StateConfiguration {
 
               return OnEntryTemplateSelection.getByCase(hasFrom, hasParams)
                   .getTemplatizer()
-                  .apply(new OnEntryTemplateConfig("  "))
+                  .apply(new OnEntryTemplateConfig(tab))
                   .apply(onEntryCalculationParams);
 
             })

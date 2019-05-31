@@ -2,6 +2,8 @@ package com.github.dovaleac.domain.templates;
 
 import com.github.dovaleac.jackson.Param;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class OnEntryCalculationParams {
@@ -23,6 +25,18 @@ public class OnEntryCalculationParams {
     this.from = from;
     this.methodName = methodName;
     this.params = params;
+  }
+
+  public Map<String, Object> asMutableMap() {
+    Map<String, Object> immutableMap = Map.of(
+        "delegateVariableName", delegateVariableName,
+        "triggerClassName", triggerClassName,
+        "stateClassName", stateClassName,
+        "numParams", numParams,
+        "methodName", methodName,
+        "params", params
+    );
+    return new HashMap<>(immutableMap);
   }
 
   public String getDelegateVariableName() {
