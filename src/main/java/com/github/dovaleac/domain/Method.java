@@ -54,6 +54,10 @@ public class Method {
     return params.stream();
   }
 
+  public String getFrom() {
+    return from;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
