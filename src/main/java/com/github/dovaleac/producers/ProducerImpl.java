@@ -183,17 +183,28 @@ public class ProducerImpl implements Producer {
     Map<String, Method> onExitMethods = gatherOnExitMethods(stateMachine)
             .collect(Collectors.toMap(Method::getName, m -> m));
 
+    Set<String> stateless4jImportedClasses = new HashSet<>();
+
     String configStates = produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
-        .map(stateConfiguration -> stateConfiguration.produceConfigurationText(
-            tab,
-            variableName,
-            stateMachine.getTriggerClassName(),
-            stateMachine.getStates().getClassName(),
-            stateMachine.getDelegateInterfaceName()
-        ))
+        .map(stateConfiguration -> {
+          String configurationText = stateConfiguration.produceConfigurationText(
+              tab,
+              variableName,
+              stateMachine.getTriggerClassName(),
+              stateMachine.getStates().getClassName(),
+              stateMachine.getDelegateInterfaceName()
+          );
+          stateless4jImportedClasses.addAll(stateConfiguration.getStateless4jImportedClasses());
+          return configurationText;
+        })
         .collect(Collectors.joining("\n\n"));
 
-    String imports = "";
+    String imports = Stream.concat(stateless4jImportedClasses.stream()
+        .map(importedClass -> "import " + importedClass + ";"),
+        Stream.of("import com.github.oxo42.stateless4j.StateMachineConfig;"))
+        .sorted()
+        .collect(Collectors.joining("\n"));
+
     Map<String, Object> substitutions =
         Map.of(
             "configStates", configStates,

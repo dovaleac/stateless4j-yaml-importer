@@ -3,20 +3,16 @@ package com.github.dovaleac.domain;
 import com.github.dovaleac.domain.templates.OnEntryCalculationParams;
 import com.github.dovaleac.domain.templates.OnEntryTemplateConfig;
 import com.github.dovaleac.domain.templates.OnEntryTemplateSelection;
-import com.github.dovaleac.jackson.Param;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class StateConfiguration {
   private final String state;
   private final List<Method> onEntry;
   private final List<Method> onExit;
   private final Map<String, String> transitions;
+  private final Set<String> stateless4jImportedClasses = new HashSet<>();
 
   public StateConfiguration(
       String state, List<Method> onEntry, List<Method> onExit, Map<String, String> transitions) {
@@ -24,6 +20,10 @@ public class StateConfiguration {
     this.onEntry = onEntry;
     this.onExit = onExit;
     this.transitions = transitions;
+  }
+
+  public Set<String> getStateless4jImportedClasses() {
+    return stateless4jImportedClasses;
   }
 
   public String produceConfigurationText(
@@ -78,6 +78,9 @@ public class StateConfiguration {
 
               boolean hasFrom = from != null;
               boolean hasParams = numParams > 0;
+
+              Stateless4jImportedClass.getImportedClass(hasFrom, numParams)
+                  .ifPresent(stateless4jImportedClasses::add);
 
               return OnEntryTemplateSelection.getTemplatizer(hasFrom, hasParams)
                   .apply(new OnEntryTemplateConfig(tab))
