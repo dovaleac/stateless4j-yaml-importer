@@ -173,4 +173,12 @@ public class ProducerImplTest {
     assertTrue(expected.containsAll(actual));
     assertEquals(expected.size(), actual.size());
   }
+
+  @Test
+  public void produceStateRepresentation() throws Exception {
+    String actual = new ProducerImpl().produceStateMachine(packageName, stateMachine, "  ",
+        "config");
+
+    System.out.println(actual);
+  }
 }

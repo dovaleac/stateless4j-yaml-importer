@@ -1,0 +1,21 @@
+package ${packageName};
+
+${imports}
+
+public class ${className} {
+
+  private final ${delegateClassName} ${delegateVariable};
+
+  public ${className}(${delegateClassName} ${delegateVariable}) {
+    this.${delegateVariable} = ${delegateVariable};
+  }
+
+  StateMachineConfig<${stateClassName}, ${triggerClassName}> getConfig() {
+    StateMachineConfig<${stateClassName}, ${triggerClassName}> ${variableName} =
+        new StateMachineConfig<>();
+
+    ${configStates}
+
+    return ${variableName};
+  }
+}

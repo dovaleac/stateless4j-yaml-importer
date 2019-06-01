@@ -24,4 +24,7 @@ public interface Producer {
 
   Stream<StateConfiguration> produceStateConfigurations(StateMachine stateMachine,
       Map<String, Method> onEntry, Map<String, Method> onExit);
+
+  String produceStateMachine(String packageName, StateMachine stateMachine, String tab,
+      String variableName) throws ValidationException, IOException;
 }

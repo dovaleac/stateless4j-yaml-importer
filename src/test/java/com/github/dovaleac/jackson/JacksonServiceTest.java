@@ -20,6 +20,7 @@ public class JacksonServiceTest {
             "ClassName",
             "Trigger",
             "Delegate",
+            "delegate",
             new States(
                 "StateClassName",
                 Arrays.asList(

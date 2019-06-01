@@ -7,6 +7,7 @@ public class StateMachine {
   private String className;
   private String triggerClassName;
   private String delegateInterfaceName;
+  private String delegateVariableName;
   private States states;
   private List<Transition> transitions;
   private List<TriggerWithParameters> triggersWithParameters;
@@ -15,12 +16,13 @@ public class StateMachine {
   }
 
   public StateMachine(String className, String triggerClassName, String delegateInterfaceName,
-      States states,
+      String delegateVariableName, States states,
       List<Transition> transitions,
       List<TriggerWithParameters> triggersWithParameters) {
     this.className = className;
     this.triggerClassName = triggerClassName;
     this.delegateInterfaceName = delegateInterfaceName;
+    this.delegateVariableName = delegateVariableName;
     this.states = states;
     this.transitions = transitions;
     this.triggersWithParameters = triggersWithParameters;
@@ -48,6 +50,14 @@ public class StateMachine {
 
   public void setDelegateInterfaceName(String delegateInterfaceName) {
     this.delegateInterfaceName = delegateInterfaceName;
+  }
+
+  public String getDelegateVariableName() {
+    return delegateVariableName;
+  }
+
+  public void setDelegateVariableName(String delegateVariableName) {
+    this.delegateVariableName = delegateVariableName;
   }
 
   public States getStates() {
@@ -95,6 +105,9 @@ public class StateMachine {
     if (!Objects.equals(delegateInterfaceName, that.delegateInterfaceName)) {
       return false;
     }
+    if (!Objects.equals(delegateVariableName, that.delegateVariableName)) {
+      return false;
+    }
     if (!Objects.equals(states, that.states)) {
       return false;
     }
@@ -109,6 +122,7 @@ public class StateMachine {
     int result = className != null ? className.hashCode() : 0;
     result = 31 * result + (triggerClassName != null ? triggerClassName.hashCode() : 0);
     result = 31 * result + (delegateInterfaceName != null ? delegateInterfaceName.hashCode() : 0);
+    result = 31 * result + (delegateVariableName != null ? delegateVariableName.hashCode() : 0);
     result = 31 * result + (states != null ? states.hashCode() : 0);
     result = 31 * result + (transitions != null ? transitions.hashCode() : 0);
     result = 31 * result + (triggersWithParameters != null ? triggersWithParameters.hashCode() : 0);
@@ -121,10 +135,10 @@ public class StateMachine {
         + "className='" + className + '\''
         + ", triggerClassName='" + triggerClassName + '\''
         + ", delegateInterfaceName='" + delegateInterfaceName + '\''
+        + ", delegateVariableName='" + delegateVariableName + '\''
         + ", states=" + states
         + ", transitions=" + transitions
         + ", triggersWithParameters=" + triggersWithParameters
         + '}';
   }
-
 }

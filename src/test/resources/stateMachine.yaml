@@ -1,6 +1,7 @@
 className: ClassName
 triggerClassName: Trigger
 delegateInterfaceName: Delegate
+delegateVariableName: delegate
 states:
   className: StateClassName
   elements:

@@ -22,6 +22,8 @@ public class ProducerImpl implements Producer {
       Paths.get("src", "main", "resources", "templates", "Trigger.txt");
   public static final Path INTERFACE_PATH =
       Paths.get("src", "main", "resources", "templates", "Interface.txt");
+  public static final Path STATE_MACHINE_PATH =
+      Paths.get("src", "main", "resources", "templates", "StateMachine.txt");
 
   @Override
   public String produceState(String packageName, States states) throws IOException {
@@ -169,5 +171,43 @@ public class ProducerImpl implements Producer {
 
               return new StateConfiguration(stateName, onEntryMethods, onExitMethods, transitions);
             });
+  }
+
+  @Override
+  public String produceStateMachine(String packageName, StateMachine stateMachine, String tab,
+      String variableName)
+      throws ValidationException, IOException {
+    Map<String, Method> onEntryMethods = gatherOnEntryMethods(stateMachine)
+            .collect(Collectors.toMap(Method::getName, m -> m));
+
+    Map<String, Method> onExitMethods = gatherOnExitMethods(stateMachine)
+            .collect(Collectors.toMap(Method::getName, m -> m));
+
+    String configStates = produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
+        .map(stateConfiguration -> stateConfiguration.produceConfigurationText(
+            tab,
+            variableName,
+            stateMachine.getTriggerClassName(),
+            stateMachine.getStates().getClassName(),
+            stateMachine.getDelegateInterfaceName()
+        ))
+        .collect(Collectors.joining("\n\n"));
+
+    String imports = "";
+    Map<String, Object> substitutions =
+        Map.of(
+            "configStates", configStates,
+            "className", stateMachine.getClassName(),
+            "delegateClassName", stateMachine.getDelegateInterfaceName(),
+            "delegateVariable", stateMachine.getDelegateVariableName(),
+            "packageName", packageName,
+            "variableName", variableName,
+            "stateClassName", stateMachine.getStates().getClassName(),
+            "triggerClassName", stateMachine.getTriggerClassName(),
+            "imports", imports);
+
+    String original = Files.lines(STATE_MACHINE_PATH).collect(Collectors.joining("\n"));
+    return VariableSubstitutionService.get().replaceAll(original, substitutions);
+
   }
 }
