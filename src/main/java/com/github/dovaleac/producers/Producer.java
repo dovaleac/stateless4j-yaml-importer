@@ -1,6 +1,8 @@
 package com.github.dovaleac.producers;
 
+import com.github.dovaleac.domain.AllFiles;
 import com.github.dovaleac.domain.Method;
+import com.github.dovaleac.domain.ProducerOptions;
 import com.github.dovaleac.domain.StateConfiguration;
 import com.github.dovaleac.exceptions.ValidationException;
 import com.github.dovaleac.jackson.StateMachine;
@@ -27,4 +29,21 @@ public interface Producer {
 
   String produceStateMachine(String packageName, StateMachine stateMachine, String tab,
       String variableName) throws ValidationException, IOException;
+
+  default AllFiles getAllFiles(StateMachine stateMachine, ProducerOptions options)
+      throws ValidationException, IOException {
+    String producedState = produceState(options.getPackageName(), stateMachine.getStates());
+    String producedStateMachine = produceStateMachine(options.getPackageName(), stateMachine,
+        options.getTab(), options.getVariableName());
+    String producedTrigger = produceTrigger(options.getPackageName(), stateMachine);
+    String producedInterface = produceInterface(options.getPackageName(), stateMachine);
+
+    return new AllFiles(
+        producedState,
+        producedStateMachine,
+        producedInterface,
+        producedTrigger);
+  }
+
+  AllFiles getFileNames(StateMachine stateMachine);
 }

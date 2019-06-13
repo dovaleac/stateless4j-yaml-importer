@@ -1,5 +1,6 @@
 package com.github.dovaleac.producers;
 
+import com.github.dovaleac.domain.AllFiles;
 import com.github.dovaleac.domain.Method;
 import com.github.dovaleac.domain.StateConfiguration;
 import com.github.dovaleac.exceptions.ValidationException;
@@ -220,5 +221,15 @@ public class ProducerImpl implements Producer {
     String original = Files.lines(STATE_MACHINE_PATH).collect(Collectors.joining("\n"));
     return VariableSubstitutionService.get().replaceAll(original, substitutions);
 
+  }
+
+  @Override
+  public AllFiles getFileNames(StateMachine stateMachine) {
+    return new AllFiles(
+        stateMachine.getStates().getClassName() + ".java",
+        stateMachine.getClassName() + ".java",
+        stateMachine.getDelegateInterfaceName() + ".java",
+        stateMachine.getTriggerClassName() + ".java"
+    );
   }
 }

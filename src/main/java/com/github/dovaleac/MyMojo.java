@@ -16,12 +16,24 @@ package com.github.dovaleac;
  * limitations under the License.
  */
 
+import com.github.dovaleac.domain.AllFiles;
+import com.github.dovaleac.domain.ProducerOptions;
+import com.github.dovaleac.exceptions.ValidationException;
+import com.github.dovaleac.io.IoServiceImpl;
+import com.github.dovaleac.jackson.JacksonService;
+import com.github.dovaleac.jackson.StateMachine;
+import com.github.dovaleac.producers.Producer;
+import com.github.dovaleac.producers.ProducerImpl;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Goal which touches a timestamp file.
@@ -29,40 +41,62 @@ import java.io.IOException;
  * @goal touch
  * @phase process-sources
  */
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class MyMojo extends AbstractMojo {
 
-  /**
-   * Location of the file.
-   *
-   * @parameter expression="${project.build.directory}"
-   * @required
-   */
-  private File outputDirectory;
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.package", required = true)
+  private String packageName;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.yamlfile", required = true)
+  private File yamlFileLocation;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.destination", required = true)
+  private String destinationFolder;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.spacesForTab", required = false,
+      defaultValue = "2")
+  private int spacesForTab;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.useTab", required = false,
+      defaultValue = "false")
+  private boolean useTab;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.variableName", required = false,
+      defaultValue = "config")
+  private String variableName;
 
   public void execute() throws MojoExecutionException {
-    File file = outputDirectory;
-
-    if (!file.exists()) {
-      file.mkdirs();
-    }
-
-    File touch = new File(file, "touch.txt");
-
-    FileWriter fileWriter = null;
     try {
-      fileWriter = new FileWriter(touch);
+      System.out.println(packageName);
+      StateMachine stateMachine = JacksonService.parseYamlFile(yamlFileLocation);
+      Producer producer = new ProducerImpl();
 
-      fileWriter.write("touch.txt");
-    } catch (IOException ex) {
-      throw new MojoExecutionException("Error creating file " + touch, ex);
-    } finally {
-      if (fileWriter != null) {
-        try {
-          fileWriter.close();
-        } catch (IOException ex) {
-          // ignore
-        }
-      }
+      ProducerOptions options = produceOptions();
+
+      AllFiles allFiles = producer.getAllFiles(stateMachine, options);
+      AllFiles fileNames = producer.getFileNames(stateMachine);
+
+      new IoServiceImpl().createFiles(allFiles, fileNames, Paths.get(destinationFolder));
+
+    } catch (IOException | ValidationException ex) {
+      throw new MojoExecutionException(ex.getMessage());
     }
+  }
+
+  ProducerOptions produceOptions() {
+    ProducerOptions options = new ProducerOptions(packageName);
+
+    if (useTab) {
+      options = options.withTab("\t");
+    } else {
+      StringBuilder stringBuilder = new StringBuilder();
+      for (int i = 0; i < spacesForTab; i++) {
+        stringBuilder.append(" ");
+      }
+      options = options.withTab(stringBuilder.toString());
+    }
+
+    options.withVariableName(variableName);
+    return options;
   }
 }
