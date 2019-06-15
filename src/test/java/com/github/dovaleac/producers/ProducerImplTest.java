@@ -105,17 +105,17 @@ public class ProducerImplTest {
         "package com.github.dovaleac;\n"
             + "\n"
             + "public interface Delegate {\n"
-            + "  entry1();\n"
+            + "  void entry1();\n"
             + "\n"
-            + "  entry21(Integer height);\n"
+            + "  void entry21(Integer height);\n"
             + "\n"
-            + "  entry22(String param1, Integer param2);\n"
+            + "  void entry22(String param1, Integer param2);\n"
             + "\n"
-            + "  exit1();\n"
+            + "  void exit1();\n"
             + "\n"
-            + "  exit31();\n"
+            + "  void exit31();\n"
             + "\n"
-            + "  exit32();\n"
+            + "  void exit32();\n"
             + "}";
 
     assertEquals(expected, actual);

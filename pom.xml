@@ -66,6 +66,14 @@
               <goal>descriptor</goal>
             </goals>
           </execution>
+
+          <!-- if you want to generate help goal -->
+          <execution>
+            <id>help-goal</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -93,6 +101,16 @@
           <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
         </configuration>
       </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-jar-plugin</artifactId>-->
+        <!--<version>3.1.2</version>-->
+        <!--<configuration>-->
+          <!--<includes>-->
+            <!--<include>src/main/resources/**</include>-->
+          <!--</includes>-->
+        <!--</configuration>-->
+      <!--</plugin>-->
     </plugins>
   </build>
 

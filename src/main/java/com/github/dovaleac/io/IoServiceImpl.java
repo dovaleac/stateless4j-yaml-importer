@@ -5,6 +5,7 @@ import com.github.dovaleac.domain.AllFiles;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 public class IoServiceImpl implements IoService {
   @Override
@@ -22,18 +23,25 @@ public class IoServiceImpl implements IoService {
       throw new IOException("Folder " + folder + " is not readable");
     }
 
+    if (!Files.exists(folder)) {
+      Files.createDirectories(folder);
+    }
 
-    Files.write(folder.resolve(fileNames.getState()),
-        allFiles.getState().getBytes());
+    createOrUpdateFile(folder, fileNames.getState(), allFiles.getState());
 
-    Files.write(folder.resolve(fileNames.getStateMachine()),
-        allFiles.getStateMachine().getBytes());
+    createOrUpdateFile(folder, fileNames.getStateMachine(), allFiles.getStateMachine());
 
-    Files.write(folder.resolve(fileNames.getDelegate()),
-        allFiles.getDelegate().getBytes());
+    createOrUpdateFile(folder, fileNames.getDelegate(), allFiles.getDelegate());
 
-    Files.write(folder.resolve(fileNames.getTrigger()),
-        allFiles.getTrigger().getBytes());
+    createOrUpdateFile(folder, fileNames.getTrigger(), allFiles.getTrigger());
 
+  }
+
+  void createOrUpdateFile(Path folder, String fileName, String content) throws IOException {
+    Files.write(folder.resolve(fileName),
+        content.getBytes(),
+        StandardOpenOption.TRUNCATE_EXISTING,
+        StandardOpenOption.CREATE
+    );
   }
 }

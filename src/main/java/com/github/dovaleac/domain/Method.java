@@ -39,7 +39,7 @@ public class Method {
   }
 
   public String generateMethodDefinition() {
-    return name + '('
+    return "void " + name + '('
         + params.stream()
             .map(Param::getParamDefinition)
             .collect(Collectors.joining(", "))

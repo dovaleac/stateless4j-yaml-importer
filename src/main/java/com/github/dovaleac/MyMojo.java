@@ -79,6 +79,7 @@ public class MyMojo extends AbstractMojo {
       new IoServiceImpl().createFiles(allFiles, fileNames, Paths.get(destinationFolder));
 
     } catch (IOException | ValidationException ex) {
+      ex.printStackTrace();
       throw new MojoExecutionException(ex.getMessage());
     }
   }

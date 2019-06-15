@@ -4,32 +4,28 @@ import com.github.dovaleac.domain.AllFiles;
 import com.github.dovaleac.domain.Method;
 import com.github.dovaleac.domain.StateConfiguration;
 import com.github.dovaleac.exceptions.ValidationException;
+import com.github.dovaleac.io.ResourceService;
 import com.github.dovaleac.jackson.*;
 import com.github.dovaleac.substitution.VariableSubstitutionService;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ProducerImpl implements Producer {
 
-  public static final Path STATE_PATH =
-      Paths.get("src", "main", "resources", "templates", "State.txt");
-  public static final Path TRIGGER_PATH =
-      Paths.get("src", "main", "resources", "templates", "Trigger.txt");
-  public static final Path INTERFACE_PATH =
-      Paths.get("src", "main", "resources", "templates", "Interface.txt");
-  public static final Path STATE_MACHINE_PATH =
-      Paths.get("src", "main", "resources", "templates", "StateMachine.txt");
+  public static final String STATE_PATH =
+      ResourceService.get().getStateTemplate();
+  public static final String TRIGGER_PATH =
+      ResourceService.get().getTriggerTemplate();
+  public static final String INTERFACE_PATH =
+      ResourceService.get().getDelegateTemplate();
+  public static final String STATE_MACHINE_PATH =
+      ResourceService.get().getStateMachineTemplate();
 
   @Override
   public String produceState(String packageName, States states) throws IOException {
-
-    String original = Files.lines(STATE_PATH).collect(Collectors.joining("\n"));
 
     String stateClassName = states.getClassName();
     String joinedStates =
@@ -41,13 +37,11 @@ public class ProducerImpl implements Producer {
     Map<String, String> substitutions =
         Map.of("package", packageName, "stateClassName", stateClassName, "states", joinedStates);
 
-    return VariableSubstitutionService.get().replaceAll(original, substitutions);
+    return VariableSubstitutionService.get().replaceAll(STATE_PATH, substitutions);
   }
 
   @Override
   public String produceTrigger(String packageName, StateMachine stateMachine) throws IOException {
-
-    String original = Files.lines(TRIGGER_PATH).collect(Collectors.joining("\n"));
 
     String triggerClassName = stateMachine.getTriggerClassName();
     String joinedTriggers =
@@ -66,7 +60,7 @@ public class ProducerImpl implements Producer {
             "triggers",
             joinedTriggers);
 
-    return VariableSubstitutionService.get().replaceAll(original, substitutions);
+    return VariableSubstitutionService.get().replaceAll(TRIGGER_PATH, substitutions);
   }
 
   @Override
@@ -123,8 +117,6 @@ public class ProducerImpl implements Producer {
             .map(Method::generateMethodDefinition)
             .collect(Collectors.joining("\n\n  "));
 
-    String original = Files.lines(INTERFACE_PATH).collect(Collectors.joining("\n"));
-
     Map<String, String> substitutions =
         Map.of(
             "package",
@@ -134,7 +126,7 @@ public class ProducerImpl implements Producer {
             "methods",
             methods);
 
-    return VariableSubstitutionService.get().replaceAll(original, substitutions);
+    return VariableSubstitutionService.get().replaceAll(INTERFACE_PATH, substitutions);
   }
 
   private RuntimeException uncheckValidationException(String message, String name) {
@@ -188,12 +180,12 @@ public class ProducerImpl implements Producer {
 
     String configStates = produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
         .map(stateConfiguration -> {
-          String configurationText = stateConfiguration.produceConfigurationText(
+          String configurationText = tab + tab + stateConfiguration.produceConfigurationText(
               tab,
               variableName,
               stateMachine.getTriggerClassName(),
               stateMachine.getStates().getClassName(),
-              stateMachine.getDelegateInterfaceName()
+              stateMachine.getDelegateVariableName()
           );
           stateless4jImportedClasses.addAll(stateConfiguration.getStateless4jImportedClasses());
           return configurationText;
@@ -218,8 +210,7 @@ public class ProducerImpl implements Producer {
             "triggerClassName", stateMachine.getTriggerClassName(),
             "imports", imports);
 
-    String original = Files.lines(STATE_MACHINE_PATH).collect(Collectors.joining("\n"));
-    return VariableSubstitutionService.get().replaceAll(original, substitutions);
+    return VariableSubstitutionService.get().replaceAll(STATE_MACHINE_PATH, substitutions);
 
   }
 

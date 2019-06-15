@@ -7,4 +7,5 @@
 <suppressions>
     <suppress checks="JavadocMethod" files=".*"/>
     <suppress checks="AvoidStarImport" files=".*"/>
+    <suppress checks=".*" files="target/.*"/>
 </suppressions>
