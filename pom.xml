@@ -7,12 +7,36 @@
   <version>1.0.0</version>
   <url>http://maven.apache.org</url>
 
-
   <properties>
     <java.version>9</java.version>
     <maven.compiler.target>9</maven.compiler.target>
     <maven.compiler.source>9</maven.compiler.source>
   </properties>
+
+  <developers>
+    <developer>
+      <id>dovaleac</id>
+      <name>Pablo González Doval</name>
+      <email>dovaleac@gmail.com</email>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+
+  <scm>
+    <developerConnection>
+      https://github.com/dovaleac/stateless4j-yaml-importer.git
+    </developerConnection>
+    <url>https://github.com/dovaleac/stateless4j-yaml-importer.git</url>
+    <connection>git://github.com/dovaleac/stateless4j-yaml-importer.git</connection>
+  </scm>
 
   <dependencies>
     <dependency>
@@ -101,16 +125,6 @@
           <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
         </configuration>
       </plugin>
-      <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-jar-plugin</artifactId>-->
-        <!--<version>3.1.2</version>-->
-        <!--<configuration>-->
-          <!--<includes>-->
-            <!--<include>src/main/resources/**</include>-->
-          <!--</includes>-->
-        <!--</configuration>-->
-      <!--</plugin>-->
     </plugins>
   </build>
 
