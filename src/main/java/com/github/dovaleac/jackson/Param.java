@@ -1,5 +1,8 @@
 package com.github.dovaleac.jackson;
 
+import com.github.dovaleac.jackson.parsed.ParsedClass;
+import com.github.dovaleac.jackson.parsed.ParsedParam;
+
 import java.util.Objects;
 
 public class Param {
@@ -12,6 +15,10 @@ public class Param {
   public Param(String className, String variableName) {
     this.className = className;
     this.variableName = variableName;
+  }
+
+  public ParsedParam parse() {
+    return new ParsedParam(ParsedClass.parse(className), variableName);
   }
 
   public String getParamDefinition() {
