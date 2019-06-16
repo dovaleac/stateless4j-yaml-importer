@@ -1,5 +1,7 @@
 package com.github.dovaleac.jackson.parsed;
 
+import java.util.Objects;
+
 public class ParsedClass {
   private final String wholeName;
   private final String className;
@@ -48,5 +50,9 @@ public class ParsedClass {
 
   public boolean isParameterized() {
     return isParameterized;
+  }
+
+  public boolean isQualified() {
+    return !Objects.equals(className, wholeName);
   }
 }

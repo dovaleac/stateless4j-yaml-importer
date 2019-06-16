@@ -119,6 +119,7 @@ The user needs to implement the `Delegate` interface and provide an instance of 
 * Uploading the plugin to an artifact repo 
 * Parameterized classes 
 * Imported classes 
+* Parameterized state machine / delegate
 * State machine diagrams 
 * Providing a method to create the `StateMachine` in 
 [stateless4j](https://github.com/oxo42/stateless4j) directly, instead of the `StateMachineConfig`

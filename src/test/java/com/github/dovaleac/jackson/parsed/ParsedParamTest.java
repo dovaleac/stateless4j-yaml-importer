@@ -16,6 +16,7 @@ public class ParsedParamTest {
     assertEquals("String", parsedClass.getClassNameWithParameter());
     assertEquals("String", parsedClass.getWholeName());
     assertFalse(parsedClass.isParameterized());
+    assertFalse(parsedClass.isQualified());
   }
 
   @Test
@@ -28,6 +29,7 @@ public class ParsedParamTest {
     assertEquals("String", parsedClass.getClassNameWithParameter());
     assertEquals("io.github.String", parsedClass.getWholeName());
     assertFalse(parsedClass.isParameterized());
+    assertTrue(parsedClass.isQualified());
   }
 
   @Test
@@ -40,6 +42,7 @@ public class ParsedParamTest {
     assertEquals("Flowable<T>", parsedClass.getClassNameWithParameter());
     assertEquals("Flowable", parsedClass.getWholeName());
     assertTrue(parsedClass.isParameterized());
+    assertFalse(parsedClass.isQualified());
   }
 
   @Test
@@ -52,6 +55,7 @@ public class ParsedParamTest {
     assertEquals("Flowable<T>", parsedClass.getClassNameWithParameter());
     assertEquals("io.github.Flowable", parsedClass.getWholeName());
     assertTrue(parsedClass.isParameterized());
+    assertTrue(parsedClass.isQualified());
   }
 
 }
