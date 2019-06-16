@@ -105,7 +105,7 @@ public class OnEntryTemplatizerWithFromWithParamsTest {
         2,
         "PREVIOUS_STATE",
         "method",
-        Stream.of(new Param("List<Integer>", "ints"),
+        Stream.of(new Param("java.util.List<Integer>", "ints"),
             new Param("Stream<String>", "strings"))
     );
 

@@ -17,7 +17,12 @@ public class ParsedClass {
   }
 
   public static ParsedClass parse(String receivedClassName) {
-    int lastDot = receivedClassName.lastIndexOf(".");
+    String wholeClassName =
+        receivedClassName.contains("<")
+        ? receivedClassName.substring(0, receivedClassName.indexOf("<"))
+        : receivedClassName;
+
+    int lastDot = wholeClassName.lastIndexOf(".");
     String classNameWithPossibleParameter =
         lastDot > 0 ? receivedClassName.substring(lastDot + 1) : receivedClassName;
     int gt = classNameWithPossibleParameter.indexOf("<");
@@ -27,10 +32,6 @@ public class ParsedClass {
             ? classNameWithPossibleParameter.substring(0, gt)
             : classNameWithPossibleParameter;
 
-    String wholeClassName =
-        isParameterized
-            ? receivedClassName.substring(0, receivedClassName.indexOf("<"))
-            : receivedClassName;
 
     return new ParsedClass(
         wholeClassName, className, classNameWithPossibleParameter, isParameterized);

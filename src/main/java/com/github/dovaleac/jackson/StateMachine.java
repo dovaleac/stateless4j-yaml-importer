@@ -11,6 +11,8 @@ public class StateMachine {
   private States states;
   private List<Transition> transitions;
   private List<TriggerWithParameters> triggersWithParameters;
+  private List<String> stateMachineParameters;
+  private List<String> delegateParameters;
 
   public StateMachine() {
   }
@@ -18,7 +20,8 @@ public class StateMachine {
   public StateMachine(String className, String triggerClassName, String delegateInterfaceName,
       String delegateVariableName, States states,
       List<Transition> transitions,
-      List<TriggerWithParameters> triggersWithParameters) {
+      List<TriggerWithParameters> triggersWithParameters,
+      List<String> stateMachineParameters, List<String> delegateParameters) {
     this.className = className;
     this.triggerClassName = triggerClassName;
     this.delegateInterfaceName = delegateInterfaceName;
@@ -26,6 +29,8 @@ public class StateMachine {
     this.states = states;
     this.transitions = transitions;
     this.triggersWithParameters = triggersWithParameters;
+    this.stateMachineParameters = stateMachineParameters;
+    this.delegateParameters = delegateParameters;
   }
 
   public String getClassName() {
@@ -83,6 +88,22 @@ public class StateMachine {
   public void setTriggersWithParameters(
       List<TriggerWithParameters> triggersWithParameters) {
     this.triggersWithParameters = triggersWithParameters;
+  }
+
+  public List<String> getStateMachineParameters() {
+    return stateMachineParameters;
+  }
+
+  public void setStateMachineParameters(List<String> stateMachineParameters) {
+    this.stateMachineParameters = stateMachineParameters;
+  }
+
+  public List<String> getDelegateParameters() {
+    return delegateParameters;
+  }
+
+  public void setDelegateParameters(List<String> delegateParameters) {
+    this.delegateParameters = delegateParameters;
   }
 
   @Override

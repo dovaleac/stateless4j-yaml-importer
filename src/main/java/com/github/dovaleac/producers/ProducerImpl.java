@@ -104,6 +104,8 @@ public class ProducerImpl implements Producer {
   @Override
   public String produceInterface(String packageName, StateMachine stateMachine)
       throws IOException, ValidationException {
+    List<String> delegateParameters = stateMachine.getDelegateParameters();
+    String parameters = getClassParameters(delegateParameters);
     Stream<Method> onEntryMethods = gatherOnEntryMethods(stateMachine);
     Stream<Method> onExitMethods = gatherOnExitMethods(stateMachine);
 
@@ -117,6 +119,8 @@ public class ProducerImpl implements Producer {
         Map.of(
             "package",
             packageName,
+            "parameters",
+            parameters,
             "delegateInterfaceName",
             stateMachine.getDelegateInterfaceName(),
             "methods",
@@ -166,7 +170,10 @@ public class ProducerImpl implements Producer {
   @Override
   public String produceStateMachine(
       String packageName, StateMachine stateMachine, String tab, String variableName)
-      throws ValidationException, IOException {
+      throws ValidationException {
+    List<String> stateMachineParameters = stateMachine.getStateMachineParameters();
+    String parameters = getClassParameters(stateMachineParameters);
+
     Map<String, Method> onEntryMethods =
         gatherOnEntryMethods(stateMachine).collect(Collectors.toMap(Method::getName, m -> m));
 
@@ -204,17 +211,34 @@ public class ProducerImpl implements Producer {
 
     Map<String, Object> substitutions =
         Map.of(
-            "configStates", configStates,
-            "className", stateMachine.getClassName(),
-            "delegateClassName", stateMachine.getDelegateInterfaceName(),
-            "delegateVariable", stateMachine.getDelegateVariableName(),
-            "packageName", packageName,
-            "variableName", variableName,
-            "stateClassName", stateMachine.getStates().getClassName(),
-            "triggerClassName", stateMachine.getTriggerClassName(),
-            "imports", imports);
+            "configStates",
+            configStates,
+            "className",
+            stateMachine.getClassName(),
+            "parameters",
+            parameters,
+            "delegateClassName",
+            stateMachine.getDelegateInterfaceName(),
+            "delegateVariable",
+            stateMachine.getDelegateVariableName(),
+            "packageName",
+            packageName,
+            "variableName",
+            variableName,
+            "stateClassName",
+            stateMachine.getStates().getClassName(),
+            "triggerClassName",
+            stateMachine.getTriggerClassName(),
+            "imports",
+            imports);
 
     return VariableSubstitutionService.get().replaceAll(STATE_MACHINE_PATH, substitutions);
+  }
+
+  String getClassParameters(List<String> stateMachineParameters) {
+    return stateMachineParameters.isEmpty()
+           ? ""
+           : "<" + String.join(", ", stateMachineParameters) + ">";
   }
 
   @Override

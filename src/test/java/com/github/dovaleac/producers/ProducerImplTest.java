@@ -104,7 +104,7 @@ public class ProducerImplTest {
     String expected =
         "package com.github.dovaleac;\n"
             + "\n"
-            + "public interface Delegate {\n"
+            + "public interface Delegate<T> {\n"
             + "  void entry1();\n"
             + "\n"
             + "  void entry21(Integer height);\n"

@@ -37,7 +37,7 @@ public class ResourceServiceImpl implements ResourceService {
         + "\n"
         + "${imports}\n"
         + "\n"
-        + "public class ${className} {\n"
+        + "public class ${className}${parameters} {\n"
         + "\n"
         + "  private final ${delegateClassName} ${delegateVariable};\n"
         + "\n"
@@ -69,7 +69,7 @@ public class ResourceServiceImpl implements ResourceService {
   public String getDelegateTemplate() {
     return "package ${package};\n"
         + "\n"
-        + "public interface ${delegateInterfaceName} {\n"
+        + "public interface ${delegateInterfaceName}${parameters} {\n"
         + "  ${methods}\n"
         + "}";
   }

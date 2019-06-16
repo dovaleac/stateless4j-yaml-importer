@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -50,7 +51,7 @@ public class JacksonServiceTest {
             Arrays.asList(
                 new TriggerWithParameters("FALL", Arrays.asList(new Param("Integer", "height"))),
                 new TriggerWithParameters("WALK", Arrays.asList(new Param("String", "param1"), new Param("Integer", "param2")))
-            ));
+            ), List.of("T", "T2"), List.of("T"));
   }
 
   @Test

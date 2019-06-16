@@ -3,6 +3,9 @@ package com.github.dovaleac.domain;
 import com.github.dovaleac.domain.templates.OnEntryCalculationParams;
 import com.github.dovaleac.domain.templates.OnEntryTemplateConfig;
 import com.github.dovaleac.domain.templates.OnEntryTemplateSelection;
+import com.github.dovaleac.jackson.Param;
+import com.github.dovaleac.jackson.parsed.ParsedClass;
+import com.github.dovaleac.jackson.parsed.ParsedParam;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -97,6 +100,13 @@ public class StateConfiguration {
 
               Stateless4jImportedClass.getImportedClass(hasFrom, numParams)
                   .ifPresent(stateless4jImportedClasses::add);
+
+              method.getParams()
+                  .map(Param::parse)
+                  .map(ParsedParam::getClassName)
+                  .filter(ParsedClass::isQualified)
+                  .map(ParsedClass::getWholeName)
+                  .forEachOrdered(stateless4jImportedClasses::add);
 
               return OnEntryTemplateSelection.getTemplatizer(hasFrom, hasParams)
                   .apply(new OnEntryTemplateConfig(tab))
