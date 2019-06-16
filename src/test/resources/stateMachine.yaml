@@ -2,6 +2,11 @@ className: ClassName
 triggerClassName: Trigger
 delegateInterfaceName: Delegate
 delegateVariableName: delegate
+stateMachineParameters:
+  - T
+  - T2
+delegateParameters:
+  - T
 states:
   className: StateClassName
   elements:

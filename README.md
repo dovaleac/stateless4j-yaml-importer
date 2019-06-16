@@ -69,6 +69,9 @@ one used in the tests](src/test/resources/stateMachine.yaml), but here's a more 
 * `delegateInterfaceName`: the name of the class that represents the delegate interface
 * `delegateVariableName`: the name of the variable that will represent the delegate in the 
 generated code
+* `stateMachineParameters`: the list of parameters of the `StateMachine` class. For example, if 
+the class was called `StateMachine<T, T2>`, the parameters would be `T` and `T2`.
+* `delegateParameters`: the same for the delegate interface.
 * `states`: it contains `className` (the name of the State class) and the list of all the states,
  specifying for each of them:
   * `name`
@@ -87,7 +90,8 @@ attributes need to be specified:
 are allowed to have up to 3 parameters. So, for all the triggers that have parameters in the 
 state machine, the user needs to specify:
   * `trigger`: the name of the trigger
-  * `params`: a list including, for each parameter, its `className` and its `variableName`
+  * `params`: a list including, for each parameter, its `className`(may be fully qualified, and 
+  may be parameterized) and its `variableName`.
 
 ### Using the generated code
 
@@ -117,8 +121,6 @@ The user needs to implement the `Delegate` interface and provide an instance of 
 ## Future improvements
 
 * Uploading the plugin to an artifact repo 
-* Parameterized classes 
-* Imported classes 
 * State machine diagrams 
 * Providing a method to create the `StateMachine` in 
 [stateless4j](https://github.com/oxo42/stateless4j) directly, instead of the `StateMachineConfig`

@@ -28,7 +28,7 @@ public interface Producer {
       Map<String, Method> onEntry, Map<String, Method> onExit);
 
   String produceStateMachine(String packageName, StateMachine stateMachine, String tab,
-      String variableName) throws ValidationException, IOException;
+      String variableName) throws ValidationException;
 
   default AllFiles getAllFiles(StateMachine stateMachine, ProducerOptions options)
       throws ValidationException, IOException {

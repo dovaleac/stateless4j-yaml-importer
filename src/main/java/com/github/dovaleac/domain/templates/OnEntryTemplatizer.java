@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 
 public abstract class OnEntryTemplatizer implements Function<OnEntryCalculationParams, String> {
   protected final String template;
-  private final Map<String, String> tabMap;
+  protected final Map<String, String> tabMap;
 
   public OnEntryTemplatizer(String tab, String template) {
     this.template = template;
