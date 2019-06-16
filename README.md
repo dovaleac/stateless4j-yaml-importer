@@ -77,6 +77,7 @@ generated code
   attribute `name` (the name of the method to be called) and optionally the attribute `from`, 
   specifying the trigger that forced the change to this state, in case the user wants the trigger
   to fulfill only if the trigger is the specified one 
+  * `superState`: the name of its super state, if any.
 * `transitions`: the list of transitions between states. For each transition, the following 
 attributes need to be specified:
   * `from`: initial state
@@ -123,4 +124,3 @@ The user needs to implement the `Delegate` interface and provide an instance of 
 [stateless4j](https://github.com/oxo42/stateless4j) directly, instead of the `StateMachineConfig`
 * Adding utility methods to fire triggers with parameters on a `StateMachine` based on the 
 current configuration
-* Allowing substates

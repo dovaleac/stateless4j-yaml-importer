@@ -35,7 +35,7 @@ public class ProducerImplTest {
         "package com.github.dovaleac;\n"
             + "\n"
             + "public enum StateClassName {\n"
-            + "  State1, State2, State3, State4\n"
+            + "  State1, State1son, State2, State3, State4\n"
             + "}";
 
     assertEquals(expected, actual);
@@ -145,17 +145,17 @@ public class ProducerImplTest {
         List.of(
             new StateConfiguration(
                 "State1",
-                List.of(new Method("entry1")),
+                null, List.of(new Method("entry1")),
                 List.of(new Method("exit1")),
                 Map.of("FLY", "State2", "FALL", "State3")),
             new StateConfiguration(
                 "State2",
-                List.of(),
+                null, List.of(),
                 List.of(new Method("exit31"), new Method("exit32")),
                 Map.of("WALK", "State3", "JUMP", "State4")),
             new StateConfiguration(
                 "State3",
-                List.of(
+                null, List.of(
                     new Method("entry21", "FALL", new Param("Integer", "height")),
                     new Method(
                         "entry22",
@@ -165,7 +165,11 @@ public class ProducerImplTest {
                 List.of(),
                 Map.of("JUMP", "State4")),
             new StateConfiguration(
-                "State4", List.of(), List.of(new Method("exit31"), new Method("exit1")), Map.of()));
+                "State4", null, List.of(), List.of(new Method("exit31"), new Method(
+                "exit1")), Map.of()),
+            new StateConfiguration(
+                "State1son", "State1", List.of(), List.of(), Map.of())
+            );
 
     expected.forEach(System.out::println);
 

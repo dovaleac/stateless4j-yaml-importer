@@ -9,14 +9,20 @@ import java.util.stream.Collectors;
 
 public class StateConfiguration {
   private final String state;
+  private final String superState;
   private final List<Method> onEntry;
   private final List<Method> onExit;
   private final Map<String, String> transitions;
   private final Set<String> stateless4jImportedClasses = new HashSet<>();
 
   public StateConfiguration(
-      String state, List<Method> onEntry, List<Method> onExit, Map<String, String> transitions) {
+      String state,
+      String superState,
+      List<Method> onEntry,
+      List<Method> onExit,
+      Map<String, String> transitions) {
     this.state = state;
+    this.superState = superState;
     this.onEntry = onEntry;
     this.onExit = onExit;
     this.transitions = transitions;
@@ -33,6 +39,7 @@ public class StateConfiguration {
       String stateClassName,
       String delegateVariableName) {
 
+    final String superStateConfiguration = produceSuperState(superState, tab, stateClassName);
     String onExit = produceOnExit(tab, delegateVariableName);
     String onEntry = produceOnEntry(tab, delegateVariableName, triggerClassName, stateClassName);
     String permits = producePermits(tab, triggerClassName, stateClassName);
@@ -51,10 +58,19 @@ public class StateConfiguration {
         + "."
         + state
         + ")"
+        + superStateConfiguration
         + permits
         + onExit
         + onEntry
         + ";";
+  }
+
+  private String produceSuperState(String superState, String tab, String stateClassName) {
+    if (superState == null) {
+      return "";
+    }
+
+    return '\n' + tab + tab + tab + ".substateOf(" + stateClassName + "." + superState + ")";
   }
 
   String produceOnEntry(
@@ -66,15 +82,15 @@ public class StateConfiguration {
               String from = method.getFrom();
               String methodName = method.getName();
 
-              OnEntryCalculationParams onEntryCalculationParams = new OnEntryCalculationParams(
-                  delegateVariableName,
-                  triggerClassName,
-                  stateClassName,
-                  numParams,
-                  from,
-                  methodName,
-                  method.getParams()
-              );
+              OnEntryCalculationParams onEntryCalculationParams =
+                  new OnEntryCalculationParams(
+                      delegateVariableName,
+                      triggerClassName,
+                      stateClassName,
+                      numParams,
+                      from,
+                      methodName,
+                      method.getParams());
 
               boolean hasFrom = from != null;
               boolean hasParams = numParams > 0;
@@ -85,7 +101,6 @@ public class StateConfiguration {
               return OnEntryTemplateSelection.getTemplatizer(hasFrom, hasParams)
                   .apply(new OnEntryTemplateConfig(tab))
                   .apply(onEntryCalculationParams);
-
             })
         .collect(Collectors.joining("\n"));
   }
@@ -99,21 +114,21 @@ public class StateConfiguration {
 
   String producePermits(String tab, String triggerClassName, String stateClassName) {
     return transitions.entrySet().stream()
-            .map(
-                entry ->
-                    tab
-                        + tab
-                        + tab
-                        + ".permit("
-                        + triggerClassName
-                        + "."
-                        + entry.getKey()
-                        + ", "
-                        + stateClassName
-                        + "."
-                        + entry.getValue()
-                        + ")")
-            .collect(Collectors.joining("\n"));
+        .map(
+            entry ->
+                tab
+                    + tab
+                    + tab
+                    + ".permit("
+                    + triggerClassName
+                    + "."
+                    + entry.getKey()
+                    + ", "
+                    + stateClassName
+                    + "."
+                    + entry.getValue()
+                    + ")")
+        .collect(Collectors.joining("\n"));
   }
 
   public String getState() {

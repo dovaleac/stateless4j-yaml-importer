@@ -24,6 +24,8 @@ states:
       onExit:
         - exit31
         - exit1
+    - name: State1son
+      superState: State1
 transitions:
   - from: State1
     to: State2

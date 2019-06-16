@@ -15,14 +15,10 @@ import java.util.stream.Stream;
 
 public class ProducerImpl implements Producer {
 
-  public static final String STATE_PATH =
-      ResourceService.get().getStateTemplate();
-  public static final String TRIGGER_PATH =
-      ResourceService.get().getTriggerTemplate();
-  public static final String INTERFACE_PATH =
-      ResourceService.get().getDelegateTemplate();
-  public static final String STATE_MACHINE_PATH =
-      ResourceService.get().getStateMachineTemplate();
+  public static final String STATE_PATH = ResourceService.get().getStateTemplate();
+  public static final String TRIGGER_PATH = ResourceService.get().getTriggerTemplate();
+  public static final String INTERFACE_PATH = ResourceService.get().getDelegateTemplate();
+  public static final String STATE_MACHINE_PATH = ResourceService.get().getStateMachineTemplate();
 
   @Override
   public String produceState(String packageName, States states) throws IOException {
@@ -86,8 +82,8 @@ public class ProducerImpl implements Producer {
                                   uncheckValidationException(
                                       "Method not found onEntry: %s", onEntry.getName()));
 
-                  return new Method(onEntry.getName(),
-                      onEntry.getFrom(), triggerWithParameters.getParams());
+                  return new Method(
+                      onEntry.getName(), onEntry.getFrom(), triggerWithParameters.getParams());
                 }
               });
     } catch (RuntimeException ex) {
@@ -162,41 +158,49 @@ public class ProducerImpl implements Producer {
                       .filter(transition -> Objects.equals(transition.getFrom(), stateName))
                       .collect(Collectors.toMap(Transition::getTrigger, Transition::getTo));
 
-              return new StateConfiguration(stateName, onEntryMethods, onExitMethods, transitions);
+              return new StateConfiguration(
+                  stateName, state.getSuperState(), onEntryMethods, onExitMethods, transitions);
             });
   }
 
   @Override
-  public String produceStateMachine(String packageName, StateMachine stateMachine, String tab,
-      String variableName)
+  public String produceStateMachine(
+      String packageName, StateMachine stateMachine, String tab, String variableName)
       throws ValidationException, IOException {
-    Map<String, Method> onEntryMethods = gatherOnEntryMethods(stateMachine)
-            .collect(Collectors.toMap(Method::getName, m -> m));
+    Map<String, Method> onEntryMethods =
+        gatherOnEntryMethods(stateMachine).collect(Collectors.toMap(Method::getName, m -> m));
 
-    Map<String, Method> onExitMethods = gatherOnExitMethods(stateMachine)
-            .collect(Collectors.toMap(Method::getName, m -> m));
+    Map<String, Method> onExitMethods =
+        gatherOnExitMethods(stateMachine).collect(Collectors.toMap(Method::getName, m -> m));
 
     Set<String> stateless4jImportedClasses = new HashSet<>();
 
-    String configStates = produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
-        .map(stateConfiguration -> {
-          String configurationText = tab + tab + stateConfiguration.produceConfigurationText(
-              tab,
-              variableName,
-              stateMachine.getTriggerClassName(),
-              stateMachine.getStates().getClassName(),
-              stateMachine.getDelegateVariableName()
-          );
-          stateless4jImportedClasses.addAll(stateConfiguration.getStateless4jImportedClasses());
-          return configurationText;
-        })
-        .collect(Collectors.joining("\n\n"));
+    String configStates =
+        produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
+            .map(
+                stateConfiguration -> {
+                  String configurationText =
+                      tab
+                          + tab
+                          + stateConfiguration.produceConfigurationText(
+                              tab,
+                              variableName,
+                              stateMachine.getTriggerClassName(),
+                              stateMachine.getStates().getClassName(),
+                              stateMachine.getDelegateVariableName());
+                  stateless4jImportedClasses.addAll(
+                      stateConfiguration.getStateless4jImportedClasses());
+                  return configurationText;
+                })
+            .collect(Collectors.joining("\n\n"));
 
-    String imports = Stream.concat(stateless4jImportedClasses.stream()
-        .map(importedClass -> "import " + importedClass + ";"),
-        Stream.of("import com.github.oxo42.stateless4j.StateMachineConfig;"))
-        .sorted()
-        .collect(Collectors.joining("\n"));
+    String imports =
+        Stream.concat(
+                stateless4jImportedClasses.stream()
+                    .map(importedClass -> "import " + importedClass + ";"),
+                Stream.of("import com.github.oxo42.stateless4j.StateMachineConfig;"))
+            .sorted()
+            .collect(Collectors.joining("\n"));
 
     Map<String, Object> substitutions =
         Map.of(
@@ -211,7 +215,6 @@ public class ProducerImpl implements Producer {
             "imports", imports);
 
     return VariableSubstitutionService.get().replaceAll(STATE_MACHINE_PATH, substitutions);
-
   }
 
   @Override
@@ -220,7 +223,6 @@ public class ProducerImpl implements Producer {
         stateMachine.getStates().getClassName() + ".java",
         stateMachine.getClassName() + ".java",
         stateMachine.getDelegateInterfaceName() + ".java",
-        stateMachine.getTriggerClassName() + ".java"
-    );
+        stateMachine.getTriggerClassName() + ".java");
   }
 }

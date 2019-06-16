@@ -7,14 +7,16 @@ public class State {
   private String name;
   private List<OnEntry> onEntry;
   private List<String> onExit;
+  private String superState;
 
   public State() {
   }
 
-  public State(String name, List<OnEntry> onEntry, List<String> onExit) {
+  public State(String name, List<OnEntry> onEntry, List<String> onExit, String superState) {
     this.name = name;
     this.onEntry = onEntry;
     this.onExit = onExit;
+    this.superState = superState;
   }
 
   public String getName() {
@@ -41,6 +43,14 @@ public class State {
     this.onExit = onExit;
   }
 
+  public String getSuperState() {
+    return superState;
+  }
+
+  public void setSuperState(String superState) {
+    this.superState = superState;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -58,7 +68,10 @@ public class State {
     if (!Objects.equals(onEntry, state.onEntry)) {
       return false;
     }
-    return Objects.equals(onExit, state.onExit);
+    if (!Objects.equals(onExit, state.onExit)) {
+      return false;
+    }
+    return Objects.equals(superState, state.superState);
   }
 
   @Override
@@ -66,6 +79,7 @@ public class State {
     int result = name != null ? name.hashCode() : 0;
     result = 31 * result + (onEntry != null ? onEntry.hashCode() : 0);
     result = 31 * result + (onExit != null ? onExit.hashCode() : 0);
+    result = 31 * result + (superState != null ? superState.hashCode() : 0);
     return result;
   }
 
@@ -75,6 +89,7 @@ public class State {
         + "name='" + name + '\''
         + ", onEntry=" + onEntry
         + ", onExit=" + onExit
+        + ", superState='" + superState + '\''
         + '}';
   }
 }
