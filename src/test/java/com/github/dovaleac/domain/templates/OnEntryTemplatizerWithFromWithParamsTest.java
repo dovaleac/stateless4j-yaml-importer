@@ -32,7 +32,7 @@ public class OnEntryTemplatizerWithFromWithParamsTest {
             + "        new TriggerWithParameters1<>(Trigger.PREVIOUS_STATE, Integer.class),\n"
             + "        (Integer intValue) -> {\n"
             + "        delegate.method(intValue);\n"
-            + "      })";
+            + "      }, Integer.class)";
 
     assertEquals(expected, actual);
   }
@@ -56,11 +56,11 @@ public class OnEntryTemplatizerWithFromWithParamsTest {
     String actual = onEntryTemplatizerNoFromNoParams.apply(params);
     String expected =
         "      .onEntryFrom(\n"
-            + "        new TriggerWithParameters2<>(Trigger.PREVIOUS_STATE, Integer.class, " +
-            "String.class),\n"
+            + "        new TriggerWithParameters2<>(Trigger.PREVIOUS_STATE, Integer.class, "
+            + "String.class),\n"
             + "        (Integer intValue, String stringValue) -> {\n"
             + "        delegate.method(intValue, stringValue);\n"
-            + "      })";
+            + "      }, Integer.class, String.class)";
 
     assertEquals(expected, actual);
   }
@@ -88,7 +88,7 @@ public class OnEntryTemplatizerWithFromWithParamsTest {
             + "        (List ints, String stringValue) -> {\n"
             + "        List<Integer> ints1 = (List<Integer>) ints;\n"
             + "        delegate.method(ints1, stringValue);\n"
-            + "      })";
+            + "      }, List.class, String.class)";
 
     assertEquals(expected, actual);
   }
@@ -117,7 +117,7 @@ public class OnEntryTemplatizerWithFromWithParamsTest {
             + "        List<Integer> ints1 = (List<Integer>) ints;\n"
             + "        Stream<String> strings1 = (Stream<String>) strings;\n"
             + "        delegate.method(ints1, strings1);\n"
-            + "      })";
+            + "      }, List.class, Stream.class)";
 
     String expected2 =
         "      .onEntryFrom(\n"
@@ -126,7 +126,7 @@ public class OnEntryTemplatizerWithFromWithParamsTest {
             + "        Stream<String> strings1 = (Stream<String>) strings;\n"
             + "        List<Integer> ints1 = (List<Integer>) ints;\n"
             + "        delegate.method(ints1, strings1);\n"
-            + "      })";
+            + "      }, List.class, Stream.class)";
 
     assertTrue(List.of(expected1, expected2).contains(actual));
   }

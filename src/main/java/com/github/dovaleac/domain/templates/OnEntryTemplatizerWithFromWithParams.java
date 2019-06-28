@@ -17,7 +17,7 @@ public class OnEntryTemplatizerWithFromWithParams extends OnEntryTemplatizer {
           + "${tab4}${paramQualifiedParams} -> {\n"
           + "${forcedTypes}"
           + "${tab4}${delegateVariableName}.${methodName}${paramUnqualifiedParams};\n"
-          + "${tab3}})";
+          + "${tab3}}, ${paramClasses})";
 
   public OnEntryTemplatizerWithFromWithParams(String tab) {
     super(tab, TEMPLATE);
