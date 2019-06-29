@@ -23,11 +23,13 @@ The code to import the plugin in a `pom.xml` is something similar to:
             <plugin>
                 <groupId>com.github.dovaleac</groupId>
                 <artifactId>stateless4j-yaml-importer</artifactId>
-                <version>1.0.0</version>
+                <version>1.2.1</version>
                 <executions>
                     <execution>
                         <id>execution</id>
-                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
@@ -40,8 +42,10 @@ The code to import the plugin in a `pom.xml` is something similar to:
 
 After adding this to the `pom.xml`, in order to generate the files, run:
 ```
-mvn clean com.github.dovaleac:stateless4j-yaml-importer:1.0.0:generate
+mvn clean compile
 ```
+
+You can find an example of this at [this repo](https://github.com/dovaleac/stateless4j-yaml-importer-tester)
 
 ### Configuration
 
