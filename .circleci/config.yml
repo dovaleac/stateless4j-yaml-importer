@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  deploy:
+    docker:
+      - image: circleci/openjdk:11.0.2
+    steps:
+      - checkout
+      - run: if [[ -n $CIRCLE_TAG ]]; then
+          mvn deploy -f pom.xml -s .m2/settings.xml -Pupload
+          fi
+  test:
+    docker:
+      - image: circleci/openjdk:11.0.2
+    steps:
+      - checkout
+      - run: mvn clean install -U -f pom.xml -s .m2/settings.xml
+workflows:
+  version: 2
+  testAndMaybeDeploy:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            - test
