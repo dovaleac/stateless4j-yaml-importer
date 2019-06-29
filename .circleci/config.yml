@@ -5,7 +5,12 @@ jobs:
       - image: circleci/openjdk:11.0.2
     steps:
       - checkout
-      - run: if [[ -n $CIRCLE_TAG ]]; then
+      - run:
+            name: import GPG key
+            command: echo -e "$GPG_KEY" | gpg --import
+      - run:
+            name: deploy via maven
+            command: if [[ -n $CIRCLE_TAG ]]; then
           mvn deploy -f pom.xml -s .m2/settings.xml -Pupload;
           fi
   test:
@@ -13,7 +18,9 @@ jobs:
       - image: circleci/openjdk:11.0.2
     steps:
       - checkout
-      - run: mvn clean install -U -f pom.xml -s .m2/settings.xml
+      - run:
+          name: clean and install
+          command: mvn clean install -U -f pom.xml -s .m2/settings.xml
 workflows:
   version: 2
   testAndMaybeDeploy:
