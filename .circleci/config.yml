@@ -18,7 +18,13 @@ workflows:
   version: 2
   testAndMaybeDeploy:
     jobs:
-      - test
+      - test:
+          filters:
+            tags:
+              only: /.*/
       - deploy:
           requires:
             - test
+          filters:
+            tags:
+              only: /^v.*/
