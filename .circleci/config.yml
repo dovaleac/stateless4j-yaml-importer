@@ -6,11 +6,11 @@ jobs:
     steps:
       - checkout
       - run:
-            name: import GPG key
-            command: echo -e "$GPG_KEY" | gpg --import
+          name: import GPG key
+          command: echo -e "$GPG_KEY" | gpg --import
       - run:
-            name: deploy via maven
-            command: if [[ -n $CIRCLE_TAG ]]; then
+          name: deploy via maven
+          command: if [[ -n $CIRCLE_TAG ]]; then
           mvn deploy -f pom.xml -s .m2/settings.xml -Pupload;
           fi
   test:
