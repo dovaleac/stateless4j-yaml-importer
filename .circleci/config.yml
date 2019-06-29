@@ -7,7 +7,8 @@ jobs:
       - checkout
       - run:
           name: import GPG key
-          command: echo -e "$GPG_KEY" | gpg --import
+          command: gpg --no-tty --batch --passphrase "$GPG_PP" --pinentry-mode loopback || true && \
+          gpg --list-secret-keys
       - run:
           name: deploy via maven
           command: if [[ -n $CIRCLE_TAG ]]; then mvn deploy -f pom.xml -s .m2/settings.xml -Pupload; fi
