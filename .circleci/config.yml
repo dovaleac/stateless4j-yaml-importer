@@ -10,9 +10,7 @@ jobs:
           command: echo -e "$GPG_KEY" | gpg --import
       - run:
           name: deploy via maven
-          command: if [[ -n $CIRCLE_TAG ]]; then
-          mvn deploy -f pom.xml -s .m2/settings.xml -Pupload;
-          fi
+          command: if [[ -n $CIRCLE_TAG ]]; then mvn deploy -f pom.xml -s .m2/settings.xml -Pupload; fi
   test:
     docker:
       - image: circleci/openjdk:11.0.2
