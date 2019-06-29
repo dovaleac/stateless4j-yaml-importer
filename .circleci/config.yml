@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run: if [[ -n $CIRCLE_TAG ]]; then
-          mvn deploy -f pom.xml -s .m2/settings.xml -Pupload
+          mvn deploy -f pom.xml -s .m2/settings.xml -Pupload;
           fi
   test:
     docker:
