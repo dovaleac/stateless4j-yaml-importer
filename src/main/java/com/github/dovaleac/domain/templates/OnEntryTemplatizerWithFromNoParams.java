@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class OnEntryTemplatizerWithFromNoParams extends OnEntryTemplatizer {
   private static final String TEMPLATE =
-      "${tab3}.onEntryFrom(${stateClassName}.${from}, "
+      "${tab3}.onEntryFrom(${triggerClassName}.${from}, "
           + "() -> ${delegateVariableName}.${methodName}())";
 
   public OnEntryTemplatizerWithFromNoParams(String tab) {

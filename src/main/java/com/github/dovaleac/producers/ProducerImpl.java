@@ -77,13 +77,17 @@ public class ProducerImpl implements Producer {
                           .filter(
                               trigger -> Objects.equals(trigger.getTrigger(), onEntry.getFrom()))
                           .findAny()
-                          .orElseThrow(
-                              () ->
-                                  uncheckValidationException(
-                                      "Method not found onEntry: %s", onEntry.getName()));
+                          .orElse(null);
 
-                  return new Method(
-                      onEntry.getName(), onEntry.getFrom(), triggerWithParameters.getParams());
+                  if (triggerWithParameters == null) {
+                    return new Method(
+                        onEntry.getName(), onEntry.getFrom());
+                  } else {
+                    return new Method(
+                        onEntry.getName(), onEntry.getFrom(), triggerWithParameters.getParams());
+                  }
+
+
                 }
               });
     } catch (RuntimeException ex) {
@@ -127,11 +131,6 @@ public class ProducerImpl implements Producer {
             methods);
 
     return VariableSubstitutionService.get().replaceAll(INTERFACE_PATH, substitutions);
-  }
-
-  private RuntimeException uncheckValidationException(String message, String name) {
-    return new RuntimeException(
-        new ValidationException(String.format("Method not found onEntry: ", name)));
   }
 
   @Override

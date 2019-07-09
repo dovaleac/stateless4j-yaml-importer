@@ -18,13 +18,13 @@ public class OnEntryTemplatizerWithFromNoParamsTest {
         "Trigger",
         "State",
         0,
-        "PREVIOUS_STATE",
+        "TRIGGER",
         "method",
         Stream.empty()
     );
 
     String actual = onEntryTemplatizerNoFromNoParams.apply(params);
-    String expected = "      .onEntryFrom(State.PREVIOUS_STATE, () -> delegate.method())";
+    String expected = "      .onEntryFrom(Trigger.TRIGGER, () -> delegate.method())";
 
     assertEquals(expected, actual);
 
