@@ -116,6 +116,8 @@ public class ProducerImplTest {
             + "  void exit31();\n"
             + "\n"
             + "  void exit32();\n"
+            + "\n"
+            + "  void logTriggerName(Trigger trigger, StateClassName state);\n"
             + "}";
 
     assertEquals(expected, actual);
@@ -147,12 +149,12 @@ public class ProducerImplTest {
                 "State1",
                 null, List.of(new Method("entry1")),
                 List.of(new Method("exit1")),
-                Map.of("FLY", "State2", "FALL", "State3")),
+                List.of("JUMP"), Map.of("FLY", "State2", "FALL", "State3")),
             new StateConfiguration(
                 "State2",
                 null, List.of(),
                 List.of(new Method("exit31"), new Method("exit32")),
-                Map.of("WALK", "State3", "JUMP", "State4")),
+                List.of(), Map.of("WALK", "State3", "JUMP", "State4")),
             new StateConfiguration(
                 "State3",
                 null, List.of(
@@ -163,12 +165,12 @@ public class ProducerImplTest {
                         new Param("String", "param1"),
                         new Param("Integer", "param2"))),
                 List.of(),
-                Map.of("JUMP", "State4")),
+                List.of(), Map.of("JUMP", "State4")),
             new StateConfiguration(
                 "State4", null, List.of(), List.of(new Method("exit31"), new Method(
-                "exit1")), Map.of()),
+                "exit1")), List.of(), Map.of()),
             new StateConfiguration(
-                "State1son", "State1", List.of(), List.of(), Map.of())
+                "State1son", "State1", List.of(), List.of(), List.of(), Map.of())
             );
 
     expected.forEach(System.out::println);

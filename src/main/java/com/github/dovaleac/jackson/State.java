@@ -1,21 +1,25 @@
 package com.github.dovaleac.jackson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class State {
   private String name;
-  private List<OnEntry> onEntry;
-  private List<String> onExit;
+  private List<OnEntry> onEntry = new ArrayList<>();
+  private List<String> onExit = new ArrayList<>();
+  private List<String> ignore = new ArrayList<>();
   private String superState;
 
   public State() {
   }
 
-  public State(String name, List<OnEntry> onEntry, List<String> onExit, String superState) {
+  public State(String name, List<OnEntry> onEntry, List<String> onExit,
+      List<String> ignore, String superState) {
     this.name = name;
     this.onEntry = onEntry;
     this.onExit = onExit;
+    this.ignore = ignore;
     this.superState = superState;
   }
 
@@ -41,6 +45,14 @@ public class State {
 
   public void setOnExit(List<String> onExit) {
     this.onExit = onExit;
+  }
+
+  public List<String> getIgnore() {
+    return ignore;
+  }
+
+  public void setIgnore(List<String> ignore) {
+    this.ignore = ignore;
   }
 
   public String getSuperState() {
@@ -71,6 +83,9 @@ public class State {
     if (!Objects.equals(onExit, state.onExit)) {
       return false;
     }
+    if (!Objects.equals(ignore, state.ignore)) {
+      return false;
+    }
     return Objects.equals(superState, state.superState);
   }
 
@@ -79,6 +94,7 @@ public class State {
     int result = name != null ? name.hashCode() : 0;
     result = 31 * result + (onEntry != null ? onEntry.hashCode() : 0);
     result = 31 * result + (onExit != null ? onExit.hashCode() : 0);
+    result = 31 * result + (ignore != null ? ignore.hashCode() : 0);
     result = 31 * result + (superState != null ? superState.hashCode() : 0);
     return result;
   }
@@ -89,6 +105,7 @@ public class State {
         + "name='" + name + '\''
         + ", onEntry=" + onEntry
         + ", onExit=" + onExit
+        + ", ignore=" + ignore
         + ", superState='" + superState + '\''
         + '}';
   }

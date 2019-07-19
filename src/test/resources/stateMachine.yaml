@@ -7,6 +7,8 @@ stateMachineParameters:
   - T2
 delegateParameters:
   - T
+eventLog:
+  method: logTriggerName
 states:
   className: StateClassName
   elements:
@@ -15,6 +17,8 @@ states:
         - name: entry1
       onExit:
         - exit1
+      ignore:
+        - JUMP
     - name: State2
       onExit:
         - exit31

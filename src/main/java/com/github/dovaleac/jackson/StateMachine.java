@@ -1,5 +1,6 @@
 package com.github.dovaleac.jackson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,8 +12,9 @@ public class StateMachine {
   private States states;
   private List<Transition> transitions;
   private List<TriggerWithParameters> triggersWithParameters;
-  private List<String> stateMachineParameters;
-  private List<String> delegateParameters;
+  private List<String> stateMachineParameters = new ArrayList<>();
+  private List<String> delegateParameters = new ArrayList<>();
+  private EventLog eventLog;
 
   public StateMachine() {
   }
@@ -21,7 +23,8 @@ public class StateMachine {
       String delegateVariableName, States states,
       List<Transition> transitions,
       List<TriggerWithParameters> triggersWithParameters,
-      List<String> stateMachineParameters, List<String> delegateParameters) {
+      List<String> stateMachineParameters, List<String> delegateParameters,
+      EventLog eventLog) {
     this.className = className;
     this.triggerClassName = triggerClassName;
     this.delegateInterfaceName = delegateInterfaceName;
@@ -31,6 +34,7 @@ public class StateMachine {
     this.triggersWithParameters = triggersWithParameters;
     this.stateMachineParameters = stateMachineParameters;
     this.delegateParameters = delegateParameters;
+    this.eventLog = eventLog;
   }
 
   public String getClassName() {
@@ -106,6 +110,14 @@ public class StateMachine {
     this.delegateParameters = delegateParameters;
   }
 
+  public EventLog getEventLog() {
+    return eventLog;
+  }
+
+  public void setEventLog(EventLog eventLog) {
+    this.eventLog = eventLog;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -135,7 +147,16 @@ public class StateMachine {
     if (!Objects.equals(transitions, that.transitions)) {
       return false;
     }
-    return Objects.equals(triggersWithParameters, that.triggersWithParameters);
+    if (!Objects.equals(triggersWithParameters, that.triggersWithParameters)) {
+      return false;
+    }
+    if (!Objects.equals(stateMachineParameters, that.stateMachineParameters)) {
+      return false;
+    }
+    if (!Objects.equals(delegateParameters, that.delegateParameters)) {
+      return false;
+    }
+    return Objects.equals(eventLog, that.eventLog);
   }
 
   @Override
@@ -147,6 +168,9 @@ public class StateMachine {
     result = 31 * result + (states != null ? states.hashCode() : 0);
     result = 31 * result + (transitions != null ? transitions.hashCode() : 0);
     result = 31 * result + (triggersWithParameters != null ? triggersWithParameters.hashCode() : 0);
+    result = 31 * result + (stateMachineParameters != null ? stateMachineParameters.hashCode() : 0);
+    result = 31 * result + (delegateParameters != null ? delegateParameters.hashCode() : 0);
+    result = 31 * result + (eventLog != null ? eventLog.hashCode() : 0);
     return result;
   }
 
@@ -160,6 +184,9 @@ public class StateMachine {
         + ", states=" + states
         + ", transitions=" + transitions
         + ", triggersWithParameters=" + triggersWithParameters
+        + ", stateMachineParameters=" + stateMachineParameters
+        + ", delegateParameters=" + delegateParameters
+        + ", eventLog=" + eventLog
         + '}';
   }
 }

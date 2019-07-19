@@ -26,18 +26,18 @@ public class JacksonServiceTest {
                 Arrays.asList(
                     new State(
                         "State1", Arrays.asList(new OnEntry("entry1", null)), Arrays.asList(
-                            "exit1"), null),
+                            "exit1"), List.of("JUMP"), null),
                     new State(
-                        "State2", null, Arrays.asList("exit31", "exit32"), null),
+                        "State2", List.of(), Arrays.asList("exit31", "exit32"), List.of(), null),
                     new State(
                         "State3",
                         Arrays.asList(new OnEntry("entry21", "FALL"), new OnEntry("entry22",
                                 "WALK")),
-                        null, null),
+                        List.of(), List.of(), null),
                     new State(
-                        "State4", null, Arrays.asList("exit31", "exit1"), null),
+                        "State4", List.of(), Arrays.asList("exit31", "exit1"), List.of(), null),
                     new State(
-                        "State1son", null, null, "State1"))),
+                        "State1son", List.of(), List.of(), List.of(), "State1"))),
             Arrays.asList(
                 new Transition("State1", "State2", "FLY"),
                 new Transition("State2", "State4", "JUMP"),
@@ -51,7 +51,7 @@ public class JacksonServiceTest {
             Arrays.asList(
                 new TriggerWithParameters("FALL", Arrays.asList(new Param("Integer", "height"))),
                 new TriggerWithParameters("WALK", Arrays.asList(new Param("String", "param1"), new Param("Integer", "param2")))
-            ), List.of("T", "T2"), List.of("T"));
+            ), List.of("T", "T2"), List.of("T"), new EventLog("logTriggerName"));
   }
 
   @Test

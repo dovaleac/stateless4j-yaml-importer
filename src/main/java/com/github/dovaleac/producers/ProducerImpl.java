@@ -80,14 +80,11 @@ public class ProducerImpl implements Producer {
                           .orElse(null);
 
                   if (triggerWithParameters == null) {
-                    return new Method(
-                        onEntry.getName(), onEntry.getFrom());
+                    return new Method(onEntry.getName(), onEntry.getFrom());
                   } else {
                     return new Method(
                         onEntry.getName(), onEntry.getFrom(), triggerWithParameters.getParams());
                   }
-
-
                 }
               });
     } catch (RuntimeException ex) {
@@ -113,10 +110,18 @@ public class ProducerImpl implements Producer {
     Stream<Method> onEntryMethods = gatherOnEntryMethods(stateMachine);
     Stream<Method> onExitMethods = gatherOnExitMethods(stateMachine);
 
-    String methods =
-        Stream.concat(onEntryMethods, onExitMethods)
-            .distinct()
-            .map(Method::generateMethodDefinition)
+    Stream<String> methodStream = Stream.concat(onEntryMethods, onExitMethods)
+        .distinct()
+        .map(Method::generateMethodDefinition);
+
+    EventLog eventLog = stateMachine.getEventLog();
+    if (eventLog != null) {
+      methodStream = Stream.concat(methodStream, Stream.of(
+          String.format("void %s(%s trigger, %s state);", eventLog.getMethod(),
+              stateMachine.getTriggerClassName(), stateMachine.getStates().getClassName())
+      ));
+    }
+    String methods = methodStream
             .collect(Collectors.joining("\n\n  "));
 
     Map<String, String> substitutions =
@@ -162,7 +167,12 @@ public class ProducerImpl implements Producer {
                       .collect(Collectors.toMap(Transition::getTrigger, Transition::getTo));
 
               return new StateConfiguration(
-                  stateName, state.getSuperState(), onEntryMethods, onExitMethods, transitions);
+                  stateName,
+                  state.getSuperState(),
+                  onEntryMethods,
+                  onExitMethods,
+                  state.getIgnore(),
+                  transitions);
             });
   }
 
@@ -182,27 +192,32 @@ public class ProducerImpl implements Producer {
     Set<String> stateless4jImportedClasses = new HashSet<>();
 
     String configStates =
-        produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
-            .map(
-                stateConfiguration -> {
-                  String configurationText =
-                      tab
-                          + tab
-                          + stateConfiguration.produceConfigurationText(
-                              tab,
-                              variableName,
-                              stateMachine.getTriggerClassName(),
-                              stateMachine.getStates().getClassName(),
-                              stateMachine.getDelegateVariableName());
-                  stateless4jImportedClasses.addAll(
-                      stateConfiguration.getStateless4jImportedClasses());
-                  return configurationText;
-                })
-            .collect(Collectors.joining("\n\n"));
+        logTriggerEvents(stateMachine, tab, variableName)
+            + produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
+                .map(
+                    stateConfiguration -> {
+                      String configurationText =
+                          tab
+                              + tab
+                              + stateConfiguration.produceConfigurationText(
+                                  tab,
+                                  variableName,
+                                  stateMachine.getTriggerClassName(),
+                                  stateMachine.getStates().getClassName(),
+                                  stateMachine.getDelegateVariableName());
+                      stateless4jImportedClasses.addAll(
+                          stateConfiguration.getStateless4jImportedClasses());
+                      return configurationText;
+                    })
+                .collect(Collectors.joining("\n\n"));
 
+    Set<String> importedClasses = stateless4jImportedClasses;
+    if (stateMachine.getEventLog() != null) {
+      importedClasses.add("java.util.stream.Stream");
+    }
     String imports =
         Stream.concat(
-                stateless4jImportedClasses.stream()
+            importedClasses.stream()
                     .map(importedClass -> "import " + importedClass + ";"),
                 Stream.of("import com.github.oxo42.stateless4j.StateMachineConfig;"))
             .sorted()
@@ -217,7 +232,7 @@ public class ProducerImpl implements Producer {
             "parameters",
             parameters,
             "delegateClassName",
-            stateMachine.getDelegateInterfaceName(),
+            getDelegateInterfaceNameForStateMachine(stateMachine),
             "delegateVariable",
             stateMachine.getDelegateVariableName(),
             "packageName",
@@ -234,10 +249,117 @@ public class ProducerImpl implements Producer {
     return VariableSubstitutionService.get().replaceAll(STATE_MACHINE_PATH, substitutions);
   }
 
+  String logTriggerEvents(StateMachine stateMachine, String tab, String variableName) {
+    EventLog eventLog = stateMachine.getEventLog();
+    if (eventLog == null) {
+      return "";
+    }
+
+    return "\n"
+        + tab
+        + "Stream.of("
+        + stateMachine.getStates().getClassName()
+        + ".values())\n"
+        + tab
+        + tab
+        + ".forEach(\n"
+        + tab
+        + tab
+        + tab
+        + "state ->\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + "Stream.of("
+        + stateMachine.getTriggerClassName()
+        + ".values())\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + ".forEach(\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + "trigger ->\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + variableName
+        + "\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + ".configure(state)\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + ".onEntryFrom(\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + "trigger,\n"
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + tab
+        + "() -> "
+        + stateMachine.getDelegateVariableName()
+        + "."
+        + eventLog.getMethod()
+        + "(trigger, state))));\n\n";
+  }
+
+  String getDelegateInterfaceNameForStateMachine(StateMachine stateMachine) {
+    String delegateInterfaceName = stateMachine.getDelegateInterfaceName();
+    List<String> delegateParameters = stateMachine.getDelegateParameters();
+    if (delegateParameters.isEmpty()) {
+      return delegateInterfaceName;
+    } else {
+      List<String> stateMachineParameters = stateMachine.getStateMachineParameters();
+      return delegateInterfaceName
+          + '<'
+          + delegateParameters.stream()
+              .map(parameter -> stateMachineParameters.contains(parameter) ? parameter : "?")
+              .collect(Collectors.joining(", "))
+          + '>';
+    }
+  }
+
   String getClassParameters(List<String> stateMachineParameters) {
     return stateMachineParameters.isEmpty()
-           ? ""
-           : "<" + String.join(", ", stateMachineParameters) + ">";
+        ? ""
+        : "<" + String.join(", ", stateMachineParameters) + ">";
   }
 
   @Override

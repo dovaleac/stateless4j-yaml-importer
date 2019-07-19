@@ -5,7 +5,7 @@
     <groupId>io.github.dovaleac</groupId>
     <artifactId>stateless4j-yaml-importer</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.2.2</version>
+    <version>1.3.0-SNAPSHOT</version>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -109,32 +109,32 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>verify-style</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <configLocation>google_checks.xml</configLocation>
-                    <encoding>UTF-8</encoding>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>false</failsOnError>
-                    <failOnViolation>true</failOnViolation>
-                    <violationSeverity>warning</violationSeverity>
-                    <linkXRef>false</linkXRef>
-                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-                    <suppressionsFileExpression>checkstyle.suppressions.file
-                    </suppressionsFileExpression>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+                <!--<version>3.0.0</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>verify-style</id>-->
+                        <!--<phase>process-classes</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>check</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<configLocation>google_checks.xml</configLocation>-->
+                    <!--<encoding>UTF-8</encoding>-->
+                    <!--<consoleOutput>true</consoleOutput>-->
+                    <!--<failsOnError>false</failsOnError>-->
+                    <!--<failOnViolation>true</failOnViolation>-->
+                    <!--<violationSeverity>warning</violationSeverity>-->
+                    <!--<linkXRef>false</linkXRef>-->
+                    <!--<suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>-->
+                    <!--<suppressionsFileExpression>checkstyle.suppressions.file-->
+                    <!--</suppressionsFileExpression>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

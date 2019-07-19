@@ -15,6 +15,7 @@ public class StateConfiguration {
   private final String superState;
   private final List<Method> onEntry;
   private final List<Method> onExit;
+  private final List<String> ignore;
   private final Map<String, String> transitions;
   private final Set<String> stateless4jImportedClasses = new HashSet<>();
 
@@ -23,11 +24,13 @@ public class StateConfiguration {
       String superState,
       List<Method> onEntry,
       List<Method> onExit,
+      List<String> ignore,
       Map<String, String> transitions) {
     this.state = state;
     this.superState = superState;
     this.onEntry = onEntry;
     this.onExit = onExit;
+    this.ignore = ignore;
     this.transitions = transitions;
   }
 
@@ -44,13 +47,18 @@ public class StateConfiguration {
 
     final String superStateConfiguration = produceSuperState(superState, tab, stateClassName);
     String onExit = produceOnExit(tab, delegateVariableName);
-    String onEntry = produceOnEntry(tab, delegateVariableName, triggerClassName, stateClassName);
+    final String onEntry = produceOnEntry(tab, delegateVariableName, triggerClassName,
+        stateClassName);
     String permits = producePermits(tab, triggerClassName, stateClassName);
+    String ignores = produceIgnores(tab, triggerClassName);
     if (!permits.isEmpty()) {
       permits = "\n" + permits;
     }
+    if (!ignores.isEmpty()) {
+      ignores = "\n" + ignores;
+    }
     if (!onExit.isEmpty()) {
-      permits += "\n";
+      ignores += "\n";
     }
     if (!onEntry.isEmpty()) {
       onExit += "\n";
@@ -63,6 +71,7 @@ public class StateConfiguration {
         + ")"
         + superStateConfiguration
         + permits
+        + ignores
         + onExit
         + onEntry
         + ";";
@@ -101,7 +110,8 @@ public class StateConfiguration {
               Stateless4jImportedClass.getImportedClass(hasFrom, numParams)
                   .ifPresent(stateless4jImportedClasses::add);
 
-              method.getParams()
+              method
+                  .getParams()
                   .map(Param::parse)
                   .map(ParsedParam::getClassName)
                   .filter(ParsedClass::isQualified)
@@ -138,6 +148,12 @@ public class StateConfiguration {
                     + "."
                     + entry.getValue()
                     + ")")
+        .collect(Collectors.joining("\n"));
+  }
+
+  String produceIgnores(String tab, String triggerClassName) {
+    return ignore.stream()
+        .map(entry -> tab + tab + tab + ".ignore(" + triggerClassName + "." + entry + ")")
         .collect(Collectors.joining("\n"));
   }
 
