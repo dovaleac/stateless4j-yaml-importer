@@ -39,13 +39,8 @@ public class ResourceServiceImpl implements ResourceService {
         + "\n"
         + "public class ${className}${parameters} {\n"
         + "\n"
-        + "  private final ${delegateClassName} ${delegateVariable};\n"
-        + "\n"
-        + "  public ${className}(${delegateClassName} ${delegateVariable}) {\n"
-        + "    this.${delegateVariable} = ${delegateVariable};\n"
-        + "  }\n"
-        + "\n"
-        + "  public StateMachineConfig<${stateClassName}, ${triggerClassName}> getConfig() {\n"
+        + "  public static StateMachineConfig<${stateClassName}, ${triggerClassName}> getConfig" +
+        "(${delegateClassName} ${delegateVariable}) {\n"
         + "    StateMachineConfig<${stateClassName}, ${triggerClassName}> ${variableName} =\n"
         + "        new StateMachineConfig<>();\n"
         + "\n"
@@ -69,7 +64,13 @@ public class ResourceServiceImpl implements ResourceService {
   public String getDelegateTemplate() {
     return "package ${package};\n"
         + "\n"
-        + "public interface ${delegateInterfaceName}${parameters} {\n"
+        + "public abstract class ${delegateInterfaceName}${parameters} {\n"
+        + "\n"
+        + "  protected final StateMachine<${stateClassName}, ${triggerClassName}> stateMachine;\n"
+        + "\n"
+        + "  public ${delegateInterfaceName}(${stateClassName} initialState) {\n"
+        + "    this.stateMachine = new StateMachine<>(initialState, ${className}.getConfig(this));\n"
+        + "  }"
         + "  ${methods}\n"
         + "}";
   }

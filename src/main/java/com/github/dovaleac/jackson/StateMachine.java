@@ -9,6 +9,7 @@ public class StateMachine {
   private String triggerClassName;
   private String delegateInterfaceName;
   private String delegateVariableName;
+  private String stateMachineClassName = "StateMachineImpl";
   private States states;
   private List<Transition> transitions;
   private List<TriggerWithParameters> triggersWithParameters;
@@ -20,7 +21,7 @@ public class StateMachine {
   }
 
   public StateMachine(String className, String triggerClassName, String delegateInterfaceName,
-      String delegateVariableName, States states,
+      String delegateVariableName, String stateMachineClassName, States states,
       List<Transition> transitions,
       List<TriggerWithParameters> triggersWithParameters,
       List<String> stateMachineParameters, List<String> delegateParameters,
@@ -29,6 +30,7 @@ public class StateMachine {
     this.triggerClassName = triggerClassName;
     this.delegateInterfaceName = delegateInterfaceName;
     this.delegateVariableName = delegateVariableName;
+    this.stateMachineClassName = stateMachineClassName;
     this.states = states;
     this.transitions = transitions;
     this.triggersWithParameters = triggersWithParameters;
@@ -188,5 +190,13 @@ public class StateMachine {
         + ", delegateParameters=" + delegateParameters
         + ", eventLog=" + eventLog
         + '}';
+  }
+
+  public String getStateMachineClassName() {
+    return stateMachineClassName;
+  }
+
+  public void setStateMachineClassName(String stateMachineClassName) {
+    this.stateMachineClassName = stateMachineClassName;
   }
 }

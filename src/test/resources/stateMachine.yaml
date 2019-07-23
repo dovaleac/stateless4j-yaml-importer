@@ -9,6 +9,7 @@ delegateParameters:
   - T
 eventLog:
   method: logTriggerName
+stateMachineClassName: GeneratedStateMachine
 states:
   className: StateClassName
   elements:

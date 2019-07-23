@@ -1,6 +1,4 @@
-package com.github.dovaleac.substitution.impl;
-
-import com.github.dovaleac.substitution.VariableSubstitutionService;
+package com.github.dovaleac.substitution;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -8,7 +6,8 @@ import java.util.regex.Pattern;
 
 public class VariableSubstitutionServiceImpl implements VariableSubstitutionService {
   @Override
-  public String replaceAll(String text, Map<String, ?> variables) {
+  public String replaceAll(String text, Substitutions substitutions) {
+    Map<String, Object> variables = substitutions.getSubstitutions();
     return Pattern.compile(VARIABLE_SUBSTITUTION_REGEX)
         .matcher(text)
         .replaceAll(

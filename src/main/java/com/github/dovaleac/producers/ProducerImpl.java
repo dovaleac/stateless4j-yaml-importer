@@ -117,11 +117,12 @@ public class ProducerImpl implements Producer {
     EventLog eventLog = stateMachine.getEventLog();
     if (eventLog != null) {
       methodStream = Stream.concat(methodStream, Stream.of(
-          String.format("void %s(%s trigger, %s state);", eventLog.getMethod(),
+          String.format("abstract void %s(%s trigger, %s state);", eventLog.getMethod(),
               stateMachine.getTriggerClassName(), stateMachine.getStates().getClassName())
       ));
     }
     String methods = methodStream
+        .map(method -> "public " + method)
             .collect(Collectors.joining("\n\n  "));
 
     Map<String, String> substitutions =
