@@ -2,7 +2,7 @@ package com.github.dovaleac.producers;
 
 import com.github.dovaleac.domain.AllFiles;
 import com.github.dovaleac.domain.Method;
-import com.github.dovaleac.domain.ProducerOptions;
+import com.github.dovaleac.domain.ExecutionConfig;
 import com.github.dovaleac.domain.StateConfiguration;
 import com.github.dovaleac.exceptions.ValidationException;
 import com.github.dovaleac.jackson.StateMachine;
@@ -30,7 +30,7 @@ public interface Producer {
   String produceStateMachine(String packageName, StateMachine stateMachine, String tab,
       String variableName) throws ValidationException;
 
-  default AllFiles getAllFiles(StateMachine stateMachine, ProducerOptions options)
+  default AllFiles getAllFiles(StateMachine stateMachine, ExecutionConfig options)
       throws ValidationException, IOException {
     String producedState = produceState(options.getPackageName(), stateMachine.getStates());
     String producedStateMachine = produceStateMachine(options.getPackageName(), stateMachine,

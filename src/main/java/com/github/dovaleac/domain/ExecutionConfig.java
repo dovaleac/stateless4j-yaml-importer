@@ -1,12 +1,12 @@
 package com.github.dovaleac.domain;
 
-public class ProducerOptions {
+public class ExecutionConfig {
 
   private final String packageName;
   private String tab = "  ";
   private String variableName = "config";
 
-  public ProducerOptions(String packageName) {
+  public ExecutionConfig(String packageName) {
     this.packageName = packageName;
   }
 
@@ -18,7 +18,7 @@ public class ProducerOptions {
     return tab;
   }
 
-  public ProducerOptions withTab(String tab) {
+  public ExecutionConfig withTab(String tab) {
     this.tab = tab;
     return this;
   }
@@ -27,7 +27,7 @@ public class ProducerOptions {
     return variableName;
   }
 
-  public ProducerOptions withVariableName(String variableName) {
+  public ExecutionConfig withVariableName(String variableName) {
     this.variableName = variableName;
     return this;
   }

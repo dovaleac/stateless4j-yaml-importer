@@ -16,14 +16,12 @@ package com.github.dovaleac;
  * limitations under the License.
  */
 
-import com.github.dovaleac.domain.AllFiles;
-import com.github.dovaleac.domain.ProducerOptions;
+import com.github.dovaleac.domain.ExecutionConfig;
 import com.github.dovaleac.exceptions.ValidationException;
 import com.github.dovaleac.io.IoServiceImpl;
 import com.github.dovaleac.jackson.JacksonService;
 import com.github.dovaleac.jackson.StateMachine;
-import com.github.dovaleac.producers.Producer;
-import com.github.dovaleac.producers.ProducerImpl;
+import com.github.dovaleac.substitution.Substitutions;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -31,7 +29,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -67,16 +64,14 @@ public class MyMojo extends AbstractMojo {
 
   public void execute() throws MojoExecutionException {
     try {
-      System.out.println(packageName);
       StateMachine stateMachine = JacksonService.parseYamlFile(yamlFileLocation);
-      Producer producer = new ProducerImpl();
 
-      ProducerOptions options = produceOptions();
+      ExecutionConfig options = generateConfig();
 
-      AllFiles allFiles = producer.getAllFiles(stateMachine, options);
-      AllFiles fileNames = producer.getFileNames(stateMachine);
+      Substitutions substitutions = Substitutions.getInstance();
+      substitutions.init(stateMachine, options);
 
-      new IoServiceImpl().createFiles(allFiles, fileNames, Paths.get(destinationFolder));
+      new IoServiceImpl().createFiles(stateMachine, Paths.get(destinationFolder));
 
     } catch (IOException | ValidationException ex) {
       ex.printStackTrace();
@@ -84,20 +79,20 @@ public class MyMojo extends AbstractMojo {
     }
   }
 
-  ProducerOptions produceOptions() {
-    ProducerOptions options = new ProducerOptions(packageName);
+  ExecutionConfig generateConfig() {
+    ExecutionConfig config = new ExecutionConfig(packageName);
 
     if (useTab) {
-      options = options.withTab("\t");
+      config = config.withTab("\t");
     } else {
       StringBuilder stringBuilder = new StringBuilder();
       for (int i = 0; i < spacesForTab; i++) {
         stringBuilder.append(" ");
       }
-      options = options.withTab(stringBuilder.toString());
+      config = config.withTab(stringBuilder.toString());
     }
 
-    options.withVariableName(variableName);
-    return options;
+    config.withVariableName(variableName);
+    return config;
   }
 }

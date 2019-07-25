@@ -1,30 +1,30 @@
-package com.github.dovaleac.domain.templates;
+package com.github.dovaleac.gatherers.stateMachine.templates;
 
 import org.junit.Test;
 
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class OnEntryTemplatizerNoFromNoParamsTest {
+public class OnEntryTemplatizerWithFromNoParamsTest {
 
   @Test
   public void test() throws Exception {
-    OnEntryTemplatizerNoFromNoParams onEntryTemplatizerNoFromNoParams =
-        new OnEntryTemplatizerNoFromNoParams("  ");
+    OnEntryTemplatizerWithFromNoParams onEntryTemplatizerNoFromNoParams =
+        new OnEntryTemplatizerWithFromNoParams("  ");
 
     OnEntryCalculationParams params = new OnEntryCalculationParams(
         "delegate",
         "Trigger",
         "State",
         0,
-        null,
+        "TRIGGER",
         "method",
         Stream.empty()
     );
 
     String actual = onEntryTemplatizerNoFromNoParams.apply(params);
-    String expected = "      .onEntry(() -> delegate.method())";
+    String expected = "      .onEntryFrom(Trigger.TRIGGER, () -> delegate.method())";
 
     assertEquals(expected, actual);
 

@@ -1,4 +1,4 @@
-package com.github.dovaleac.domain.templates;
+package com.github.dovaleac.gatherers.stateMachine.templates;
 
 public class OnEntryTemplateConfig {
 
