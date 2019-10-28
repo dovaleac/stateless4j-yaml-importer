@@ -6,8 +6,14 @@ import java.util.regex.Pattern;
 
 public class VariableSubstitutionServiceImpl implements VariableSubstitutionService {
   @Override
-  public String replaceAll(String text, Substitutions substitutions) {
-    Map<String, Object> variables = substitutions.getSubstitutions();
+  public String replaceAll(String text) {
+    Map<String, Object> variables = Substitutions.getSubstitutions();
+    return replaceAll(text, variables);
+  }
+
+
+  @Override
+  public String replaceAll(String text, Map<String, ?> variables) {
     return Pattern.compile(VARIABLE_SUBSTITUTION_REGEX)
         .matcher(text)
         .replaceAll(

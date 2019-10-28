@@ -1,4 +1,4 @@
-package com.github.dovaleac.gatherers.stateMachine.templates;
+package com.github.dovaleac.gatherers.statemachine.templates;
 
 public class OnEntryTemplatizerNoFromNoParams extends OnEntryTemplatizer {
   private static final String TEMPLATE =

@@ -6,7 +6,7 @@ import com.github.dovaleac.exceptions.ValidationException;
 import com.github.dovaleac.gatherers.delegate.DelegateGatherer;
 import com.github.dovaleac.gatherers.methods.MethodGatherer;
 import com.github.dovaleac.gatherers.state.StateGatherer;
-import com.github.dovaleac.gatherers.stateMachine.StateConfigGatherer;
+import com.github.dovaleac.gatherers.statemachine.StateConfigGatherer;
 import com.github.dovaleac.gatherers.trigger.TriggerGatherer;
 import com.github.dovaleac.jackson.StateMachine;
 
@@ -29,7 +29,12 @@ public class Substitutions {
 
   private Substitutions() {}
 
-  public static Substitutions getInstance() {
+  public static void init(StateMachine stateMachine, ExecutionConfig executionConfig)
+      throws ValidationException {
+    getInstance().initPrivate(stateMachine, executionConfig);
+  }
+
+  private static Substitutions getInstance() {
     if (mInstance == null) {
       synchronized (Substitutions.class) {
         if (mInstance == null) {
@@ -40,11 +45,11 @@ public class Substitutions {
     return mInstance;
   }
 
-  Map<String, Object> getSubstitutions() {
-    return substitutions;
+  static Map<String, Object> getSubstitutions() {
+    return getInstance().substitutions;
   }
 
-  public void init(StateMachine stateMachine, ExecutionConfig executionConfig)
+  private void initPrivate(StateMachine stateMachine, ExecutionConfig executionConfig)
       throws ValidationException {
     Map<String, Method> onEntryMethods =
         methodGatherer
@@ -70,7 +75,7 @@ public class Substitutions {
         "delegateInterfaceNameForStateMachine",
         delegateGatherer.getDelegateInterfaceNameForStateMachine(stateMachine));
     substitutions.put("delegateVariableName", stateMachine.getDelegateVariableName());
-    substitutions.put("triggerName", stateMachine.getTriggerClassName());
+    substitutions.put("triggerClassName", stateMachine.getTriggerClassName());
     substitutions.put("triggers", triggerGatherer.getJoinedTriggers(stateMachine));
     substitutions.put(
         "delegateParameters", getClassParameters(stateMachine.getDelegateParameters()));
@@ -79,6 +84,9 @@ public class Substitutions {
     substitutions.put(
         "delegateMethods",
         delegateGatherer.getDelegateMethods(stateMachine, onEntryMethods, onExitMethods));
+    substitutions.put("delegateImports", delegateGatherer.getDelegateImports(stateMachine));
+    substitutions.put("fireMethods", delegateGatherer.getFireMethods(stateMachine, "fire",
+        executionConfig.getTab()));
 
     substitutions.putAll(
         stateConfigGatherer.calculateStateMachineImportsAndConfigStates(

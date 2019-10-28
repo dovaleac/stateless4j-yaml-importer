@@ -13,6 +13,10 @@ public interface DelegateGatherer {
       Map<String, Method> onEntryMethods,
       Map<String, Method> onExitMethods);
 
+  String getDelegateImports(StateMachine stateMachine);
+
+  String getFireMethods(StateMachine stateMachine, String fire, String tab);
+
   static DelegateGatherer getInstance() {
     return DelegateGathererImpl.getInstance();
   }

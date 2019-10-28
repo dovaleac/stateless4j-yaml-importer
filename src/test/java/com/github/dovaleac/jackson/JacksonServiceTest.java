@@ -21,7 +21,7 @@ public class JacksonServiceTest {
             "Trigger",
             "Delegate",
             "delegate",
-            stateMachineClassName, new States(
+            "GeneratedStateMachine", new States(
                 "StateClassName",
                 Arrays.asList(
                     new State(

@@ -1,8 +1,8 @@
 package com.github.dovaleac.domain;
 
-import com.github.dovaleac.gatherers.stateMachine.templates.OnEntryCalculationParams;
-import com.github.dovaleac.gatherers.stateMachine.templates.OnEntryTemplateConfig;
-import com.github.dovaleac.gatherers.stateMachine.templates.OnEntryTemplateSelection;
+import com.github.dovaleac.gatherers.statemachine.templates.OnEntryCalculationParams;
+import com.github.dovaleac.gatherers.statemachine.templates.OnEntryTemplateConfig;
+import com.github.dovaleac.gatherers.statemachine.templates.OnEntryTemplateSelection;
 import com.github.dovaleac.jackson.Param;
 import com.github.dovaleac.jackson.parsed.ParsedClass;
 import com.github.dovaleac.jackson.parsed.ParsedParam;

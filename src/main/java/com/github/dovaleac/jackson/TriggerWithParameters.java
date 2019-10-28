@@ -1,13 +1,23 @@
 package com.github.dovaleac.jackson;
 
+import com.github.dovaleac.jackson.parsed.ParsedClass;
+import com.github.dovaleac.jackson.parsed.ParsedParam;
+import com.github.dovaleac.substitution.VariableSubstitutionService;
+import com.github.dovaleac.util.StringUtils;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TriggerWithParameters {
   private String trigger;
   private List<Param> params;
 
-  public TriggerWithParameters() {
+  public TriggerWithParameters() {}
+
+  public TriggerWithParameters(String trigger) {
+    this(trigger, List.of());
   }
 
   public TriggerWithParameters(String trigger, List<Param> params) {
@@ -29,6 +39,59 @@ public class TriggerWithParameters {
 
   public void setParams(List<Param> params) {
     this.params = params;
+  }
+
+  public String asFireMethod(String fire, String tab, String triggerClassName) {
+    String template =
+        "${tab}public void ${fire}${trigger}(${paramsWithClasses}) {\n"
+            + "${tab}${tab}this.stateMachine.fire(${triggerToFire});\n"
+            + "${tab}}\n\n";
+
+    String triggerToFire =
+        params.isEmpty() ? triggerClassName + "." + trigger : getTriggerCall(triggerClassName, tab);
+
+    Map<String, Object> substitutions =
+        Map.of(
+            "fire",
+            fire,
+            "tab",
+            tab,
+            "trigger",
+            StringUtils.toCapitalCamelCase(trigger),
+            "paramsWithClasses",
+            params.stream().map(Param::getParamDefinition).collect(Collectors.joining(", ")),
+            "triggerToFire",
+            triggerToFire);
+
+    return VariableSubstitutionService.get().replaceAll(template, substitutions);
+  }
+
+  private String getTriggerCall(String triggerClassName, String tab) {
+    String template =
+        "new TriggerWithParameters${size}<>(\n"
+            + "${tab}${tab}${tab}${triggerClassName}.${trigger}, ${paramClasses}),\n"
+            + "${tab}${tab}${tab}${paramVars}";
+    Map<String, Object> substitutions =
+        Map.of(
+            "size",
+            params.size(),
+            "triggerClassName",
+            triggerClassName,
+            "trigger",
+            trigger,
+            "paramClasses",
+            params.stream()
+                .map(Param::parse)
+                .map(ParsedParam::getClassName)
+                .map(ParsedClass::getWholeName)
+                .map(paramClass -> paramClass + ".class")
+                .collect(Collectors.joining(", ")),
+            "paramVars",
+            params.stream().map(Param::getVariableName).collect(Collectors.joining(", ")),
+            "tab",
+            tab);
+
+    return VariableSubstitutionService.get().replaceAll(template, substitutions);
   }
 
   @Override
@@ -57,9 +120,6 @@ public class TriggerWithParameters {
 
   @Override
   public String toString() {
-    return "TriggerWithParameters{"
-        + "trigger='" + trigger + '\''
-        + ", params=" + params
-        + '}';
+    return "TriggerWithParameters{" + "trigger='" + trigger + '\'' + ", params=" + params + '}';
   }
 }

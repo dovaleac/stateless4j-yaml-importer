@@ -1,4 +1,4 @@
-package com.github.dovaleac.gatherers.stateMachine;
+package com.github.dovaleac.gatherers.statemachine;
 
 import com.github.dovaleac.domain.Method;
 import com.github.dovaleac.domain.StateConfiguration;
@@ -15,10 +15,9 @@ public class StateConfigGathererImpl implements StateConfigGatherer {
 
   private static volatile StateConfigGathererImpl mInstance;
 
-  private StateConfigGathererImpl() {
-  }
+  private StateConfigGathererImpl() {}
 
-  static StateConfigGathererImpl getInstance() {
+  public static StateConfigGathererImpl getInstance() {
     if (mInstance == null) {
       synchronized (StateConfigGathererImpl.class) {
         if (mInstance == null) {
@@ -41,30 +40,31 @@ public class StateConfigGathererImpl implements StateConfigGatherer {
     String configStates =
         logTriggerEvents(stateMachine, tab, variableName)
             + produceStateConfigurations(stateMachine, onEntryMethods, onExitMethods)
-            .map(
-                stateConfiguration -> {
-                  String configurationText =
-                      tab
-                          + tab
-                          + stateConfiguration.produceConfigurationText(
-                          tab,
-                          variableName,
-                          stateMachine.getTriggerClassName(),
-                          stateMachine.getStates().getClassName(),
-                          stateMachine.getDelegateVariableName());
-                  stateless4jImportedClasses.addAll(
-                      stateConfiguration.getStateless4jImportedClasses());
-                  return configurationText;
-                })
-            .collect(Collectors.joining("\n\n"));
+                .map(
+                    stateConfiguration -> {
+                      String configurationText =
+                          tab
+                              + tab
+                              + stateConfiguration.produceConfigurationText(
+                                  tab,
+                                  variableName,
+                                  stateMachine.getTriggerClassName(),
+                                  stateMachine.getStates().getClassName(),
+                                  stateMachine.getDelegateVariableName());
+                      stateless4jImportedClasses.addAll(
+                          stateConfiguration.getStateless4jImportedClasses());
+                      return configurationText;
+                    })
+                .collect(Collectors.joining("\n\n"));
 
     if (stateMachine.getEventLog() != null) {
       stateless4jImportedClasses.add("java.util.stream.Stream");
     }
     String imports =
         Stream.concat(
-            stateless4jImportedClasses.stream().map(importedClass -> "import " + importedClass + ";"),
-            Stream.of("import com.github.oxo42.stateless4j.StateMachineConfig;"))
+                stateless4jImportedClasses.stream()
+                    .map(importedClass -> "import " + importedClass + ";"),
+                Stream.of("import com.github.oxo42.stateless4j.StateMachineConfig;"))
             .sorted()
             .collect(Collectors.joining("\n"));
 
@@ -84,17 +84,17 @@ public class StateConfigGathererImpl implements StateConfigGatherer {
               List<OnEntry> stateOnEntry = state.getOnEntry();
               List<Method> onEntryMethods =
                   stateOnEntry == null
-                  ? new ArrayList<>(0)
-                  : stateOnEntry.stream()
-                      .map(OnEntry::getName)
-                      .map(onEntry::get)
-                      .collect(Collectors.toList());
+                      ? new ArrayList<>(0)
+                      : stateOnEntry.stream()
+                          .map(OnEntry::getName)
+                          .map(onEntry::get)
+                          .collect(Collectors.toList());
 
               List<String> stateOnExit = state.getOnExit();
               List<Method> onExitMethods =
                   stateOnExit == null
-                  ? new ArrayList<>(0)
-                  : stateOnExit.stream().map(onExit::get).collect(Collectors.toList());
+                      ? new ArrayList<>(0)
+                      : stateOnExit.stream().map(onExit::get).collect(Collectors.toList());
 
               Map<String, String> transitions =
                   stateMachine.getTransitions().stream()
@@ -201,5 +201,4 @@ public class StateConfigGathererImpl implements StateConfigGatherer {
         + eventLog.getMethod()
         + "(trigger, state))));\n\n";
   }
-
 }

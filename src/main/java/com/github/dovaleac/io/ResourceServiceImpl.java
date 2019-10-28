@@ -1,15 +1,10 @@
 package com.github.dovaleac.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 public class ResourceServiceImpl implements ResourceService {
 
   private static volatile ResourceServiceImpl mInstance;
 
-  private ResourceServiceImpl() {
-  }
+  private ResourceServiceImpl() {}
 
   static ResourceServiceImpl getInstance() {
     if (mInstance == null) {
@@ -24,7 +19,7 @@ public class ResourceServiceImpl implements ResourceService {
 
   @Override
   public String getStateTemplate() {
-    return "package ${package};\n"
+    return "package ${packageName};\n"
         + "\n"
         + "public enum ${stateClassName} {\n"
         + "  ${states}\n"
@@ -37,10 +32,10 @@ public class ResourceServiceImpl implements ResourceService {
         + "\n"
         + "${imports}\n"
         + "\n"
-        + "public class ${className}${parameters} {\n"
+        + "public class ${className}${stateMachineParameters} {\n"
         + "\n"
-        + "  public static StateMachineConfig<${stateClassName}, ${triggerClassName}> getConfig" +
-        "(${delegateClassName} ${delegateVariable}) {\n"
+        + "  public StateMachineConfig<${stateClassName}, ${triggerClassName}> getConfig"
+        + "(${delegateInterfaceNameForStateMachine} ${delegateVariableName}) {\n"
         + "    StateMachineConfig<${stateClassName}, ${triggerClassName}> ${variableName} =\n"
         + "        new StateMachineConfig<>();\n"
         + "\n"
@@ -53,7 +48,7 @@ public class ResourceServiceImpl implements ResourceService {
 
   @Override
   public String getTriggerTemplate() {
-    return "package ${package};\n"
+    return "package ${packageName};\n"
         + "\n"
         + "public enum ${triggerClassName} {\n"
         + "  ${triggers}\n"
@@ -62,16 +57,21 @@ public class ResourceServiceImpl implements ResourceService {
 
   @Override
   public String getDelegateTemplate() {
-    return "package ${package};\n"
+    return "package ${packageName};\n"
         + "\n"
-        + "public abstract class ${delegateInterfaceName}${parameters} {\n"
+        + "import com.github.oxo42.stateless4j.StateMachine;\n"
+        + "${delegateImports}\n"
+        + "\n"
+        + "public abstract class ${delegateInterfaceName}${delegateParameters} {\n"
         + "\n"
         + "  protected final StateMachine<${stateClassName}, ${triggerClassName}> stateMachine;\n"
         + "\n"
         + "  public ${delegateInterfaceName}(${stateClassName} initialState) {\n"
-        + "    this.stateMachine = new StateMachine<>(initialState, ${className}.getConfig(this));\n"
-        + "  }"
-        + "  ${methods}\n"
+        + "    this.stateMachine = new StateMachine<>(initialState, new ${className}().getConfig"
+        + "(this));\n"
+        + "  }\n\n"
+        + "  ${delegateMethods}\n\n"
+        + "${fireMethods}\n"
         + "}";
   }
 }

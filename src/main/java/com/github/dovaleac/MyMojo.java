@@ -68,8 +68,7 @@ public class MyMojo extends AbstractMojo {
 
       ExecutionConfig options = generateConfig();
 
-      Substitutions substitutions = Substitutions.getInstance();
-      substitutions.init(stateMachine, options);
+      Substitutions.init(stateMachine, options);
 
       new IoServiceImpl().createFiles(stateMachine, Paths.get(destinationFolder));
 

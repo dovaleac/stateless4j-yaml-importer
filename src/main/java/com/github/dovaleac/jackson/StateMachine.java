@@ -3,6 +3,7 @@ package com.github.dovaleac.jackson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class StateMachine {
   private String className;
@@ -118,6 +119,21 @@ public class StateMachine {
 
   public void setEventLog(EventLog eventLog) {
     this.eventLog = eventLog;
+  }
+
+  public Stream<TriggerWithParameters> getAllTriggersAsTriggersWithParameters() {
+    List<TriggerWithParameters> triggersWithParameters = getTriggersWithParameters();
+    return getTransitions().stream()
+        .map(Transition::getTrigger)
+        .distinct()
+        .map(
+            triggerName ->
+                triggersWithParameters.stream()
+                    .filter(
+                        triggerWithParameters ->
+                            Objects.equals(triggerWithParameters.getTrigger(), triggerName))
+                    .findAny()
+                    .orElse(new TriggerWithParameters(triggerName)));
   }
 
   @Override
