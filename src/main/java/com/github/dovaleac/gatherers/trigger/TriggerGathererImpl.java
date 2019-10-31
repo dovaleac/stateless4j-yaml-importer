@@ -29,6 +29,6 @@ public class TriggerGathererImpl implements TriggerGatherer {
         .map(Transition::getTrigger)
         .distinct()
         .sorted()
-        .collect(Collectors.joining(", "));
+        .collect(Collectors.joining(",\n  "));
   }
 }

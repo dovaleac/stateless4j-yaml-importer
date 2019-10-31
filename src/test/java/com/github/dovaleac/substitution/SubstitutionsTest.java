@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SubstitutionsTest {
 
@@ -51,7 +51,10 @@ public class SubstitutionsTest {
         "package com.github.dovaleac;\n"
             + "\n"
             + "public enum Trigger {\n"
-            + "  FALL, FLY, JUMP, WALK\n"
+            + "  FALL,\n"
+            + "  FLY,\n"
+            + "  JUMP,\n"
+            + "  WALK\n"
             + "}";
 
     assertEquals(expected, actual);

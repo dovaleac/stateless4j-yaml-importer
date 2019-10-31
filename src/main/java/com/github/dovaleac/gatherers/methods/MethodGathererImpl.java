@@ -4,18 +4,20 @@ import com.github.dovaleac.domain.Method;
 import com.github.dovaleac.exceptions.ValidationException;
 import com.github.dovaleac.jackson.State;
 import com.github.dovaleac.jackson.StateMachine;
+import com.github.dovaleac.jackson.Transition;
 import com.github.dovaleac.jackson.TriggerWithParameters;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MethodGathererImpl implements MethodGatherer {
 
   private static volatile MethodGathererImpl mInstance;
 
-  private MethodGathererImpl() {
-  }
+  private MethodGathererImpl() {}
 
   static MethodGathererImpl getInstance() {
     if (mInstance == null) {
@@ -39,6 +41,41 @@ public class MethodGathererImpl implements MethodGatherer {
           .map(
               onEntry -> {
                 if (onEntry.getFrom() == null) {
+                  Set<String> triggersThatMayProduceThisOnEntry =
+                      stateMachine.getStates().getElements().stream()
+                          .filter(
+                              state ->
+                                  state.getOnEntry().stream()
+                                      .anyMatch(
+                                          onEntry1 ->
+                                              Objects.equals(
+                                                  onEntry1.getName(), onEntry.getName())))
+                          .flatMap(
+                              state ->
+                                  stateMachine.getTransitions().stream()
+                                      .filter(
+                                          transition ->
+                                              Objects.equals(transition.getTo(), state.getName())))
+                          .map(Transition::getTrigger)
+                          .collect(Collectors.toSet());
+
+                  if (triggersThatMayProduceThisOnEntry.size() == 1) {
+                    String producerTrigger =
+                        triggersThatMayProduceThisOnEntry.toArray()[0].toString();
+                    TriggerWithParameters triggerWithParameters =
+                        stateMachine.getTriggersWithParameters().stream()
+                            .filter(
+                                trigger -> Objects.equals(trigger.getTrigger(), producerTrigger))
+                            .findAny()
+                            .orElse(null);
+
+                    if (triggerWithParameters == null) {
+                      return new Method(onEntry.getName());
+                    } else {
+                      return new Method(
+                          onEntry.getName(), producerTrigger, triggerWithParameters.getParams());
+                    }
+                  }
                   return new Method(onEntry.getName());
                 } else {
                   TriggerWithParameters triggerWithParameters =

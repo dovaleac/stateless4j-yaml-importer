@@ -46,6 +46,6 @@ public class IoServiceImpl implements IoService {
 
   void createOrUpdateFile(Path file, String content) throws IOException {
     Files.write(
-        file, content.getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+        file, content.getBytes());
   }
 }

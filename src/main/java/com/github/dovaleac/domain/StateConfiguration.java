@@ -47,8 +47,8 @@ public class StateConfiguration {
 
     final String superStateConfiguration = produceSuperState(superState, tab, stateClassName);
     String onExit = produceOnExit(tab, delegateVariableName);
-    final String onEntry = produceOnEntry(tab, delegateVariableName, triggerClassName,
-        stateClassName);
+    final String onEntry =
+        produceOnEntry(tab, delegateVariableName, triggerClassName, stateClassName);
     String permits = producePermits(tab, triggerClassName, stateClassName);
     String ignores = produceIgnores(tab, triggerClassName);
     if (!permits.isEmpty()) {
@@ -135,19 +135,30 @@ public class StateConfiguration {
   String producePermits(String tab, String triggerClassName, String stateClassName) {
     return transitions.entrySet().stream()
         .map(
-            entry ->
-                tab
+            transition -> {
+              if (Objects.equals(transition.getValue(), state)) {
+                return tab
                     + tab
                     + tab
-                    + ".permit("
+                    + ".permitReentry("
                     + triggerClassName
                     + "."
-                    + entry.getKey()
-                    + ", "
-                    + stateClassName
-                    + "."
-                    + entry.getValue()
-                    + ")")
+                    + transition.getKey()
+                    + ")";
+              }
+              return tab
+                  + tab
+                  + tab
+                  + ".permit("
+                  + triggerClassName
+                  + "."
+                  + transition.getKey()
+                  + ", "
+                  + stateClassName
+                  + "."
+                  + transition.getValue()
+                  + ")";
+            })
         .collect(Collectors.joining("\n"));
   }
 
