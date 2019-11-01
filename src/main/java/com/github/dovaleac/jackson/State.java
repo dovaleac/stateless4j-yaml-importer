@@ -10,17 +10,19 @@ public class State {
   private List<String> onExit = new ArrayList<>();
   private List<String> ignore = new ArrayList<>();
   private String superState;
+  private boolean isInitial = false;
 
   public State() {
   }
 
   public State(String name, List<OnEntry> onEntry, List<String> onExit,
-      List<String> ignore, String superState) {
+      List<String> ignore, String superState, boolean isInitial) {
     this.name = name;
     this.onEntry = onEntry;
     this.onExit = onExit;
     this.ignore = ignore;
     this.superState = superState;
+    this.isInitial = isInitial;
   }
 
   public String getName() {
@@ -63,6 +65,14 @@ public class State {
     this.superState = superState;
   }
 
+  public boolean isInitial() {
+    return isInitial;
+  }
+
+  public void setInitial(boolean initial) {
+    isInitial = initial;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -74,6 +84,9 @@ public class State {
 
     State state = (State) obj;
 
+    if (isInitial != state.isInitial) {
+      return false;
+    }
     if (!Objects.equals(name, state.name)) {
       return false;
     }
@@ -96,6 +109,7 @@ public class State {
     result = 31 * result + (onExit != null ? onExit.hashCode() : 0);
     result = 31 * result + (ignore != null ? ignore.hashCode() : 0);
     result = 31 * result + (superState != null ? superState.hashCode() : 0);
+    result = 31 * result + (isInitial ? 1 : 0);
     return result;
   }
 
@@ -107,6 +121,7 @@ public class State {
         + ", onExit=" + onExit
         + ", ignore=" + ignore
         + ", superState='" + superState + '\''
+        + ", isInitial=" + isInitial
         + '}';
   }
 }

@@ -16,12 +16,16 @@ package com.github.dovaleac;
  * limitations under the License.
  */
 
+import com.github.dovaleac.diagrams.PlantUmlDiagramService;
 import com.github.dovaleac.domain.ExecutionConfig;
 import com.github.dovaleac.exceptions.ValidationException;
+import com.github.dovaleac.io.IoService;
 import com.github.dovaleac.io.IoServiceImpl;
 import com.github.dovaleac.jackson.JacksonService;
+import com.github.dovaleac.jackson.State;
 import com.github.dovaleac.jackson.StateMachine;
 import com.github.dovaleac.substitution.Substitutions;
+import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -29,7 +33,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 
 /**
@@ -49,6 +55,22 @@ public class MyMojo extends AbstractMojo {
 
   @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.destination", required = true)
   private String destinationFolder;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.diagram.generate", required =
+      false, defaultValue = "false")
+  private boolean generateDiagram;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.diagram.destination", required =
+      false, defaultValue = "src/main/resources/diagrams")
+  private String diagramDestination;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.diagram.fileName", required =
+      false, defaultValue = "states.png")
+  private String diagramFileName;
+
+  @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.diagram.initialState", required =
+      false)
+  private String initialState;
 
   @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.spacesForTab", required = false,
       defaultValue = "2")
@@ -70,7 +92,32 @@ public class MyMojo extends AbstractMojo {
 
       Substitutions.init(stateMachine, options);
 
-      new IoServiceImpl().createFiles(stateMachine, Paths.get(destinationFolder));
+      IoService ioService = new IoServiceImpl();
+      ioService.createFiles(stateMachine, Paths.get(destinationFolder));
+
+      if (generateDiagram) {
+        if (diagramDestination == null) {
+          diagramDestination = destinationFolder;
+        }
+
+        if (initialState == null) {
+          initialState = stateMachine.getStates().getElements()
+                  .stream()
+                  .filter(State::isInitial)
+                  .findAny()
+                  .orElseThrow(() -> new ValidationException("No initial state provided"))
+                  .getName();
+        }
+
+        String diagramContent = new PlantUmlDiagramService()
+            .generatePlantUmlDiagramTxt(stateMachine, initialState, true);
+
+        File pngFile = Paths.get(diagramDestination).resolve(diagramFileName).toFile();
+        OutputStream png = new FileOutputStream(pngFile);
+
+        SourceStringReader reader = new SourceStringReader(diagramContent);
+        reader.outputImage(png);
+      }
 
     } catch (IOException | ValidationException ex) {
       ex.printStackTrace();

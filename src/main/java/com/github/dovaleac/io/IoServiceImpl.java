@@ -44,7 +44,8 @@ public class IoServiceImpl implements IoService {
         StandardOpenOption.CREATE);
   }
 
-  void createOrUpdateFile(Path file, String content) throws IOException {
+  @Override
+  public void createOrUpdateFile(Path file, String content) throws IOException {
     Files.write(
         file, content.getBytes());
   }
