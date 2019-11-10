@@ -13,6 +13,7 @@ public class IoServiceImpl implements IoService {
 
   @Override
   public void createFiles(StateMachine stateMachine, Path folder) throws IOException {
+    Files.createDirectories(folder);
     try {
       FileToGenerate.values()
           .forEach(
@@ -26,6 +27,7 @@ public class IoServiceImpl implements IoService {
                   throw new RuntimeException(ex);
                 }
               });
+
     } catch (RuntimeException ex) {
       if (ex.getCause() instanceof IOException) {
         throw ((IOException) ex.getCause());
@@ -45,7 +47,6 @@ public class IoServiceImpl implements IoService {
 
   @Override
   public void createOrUpdateFile(Path file, String content) throws IOException {
-    Files.write(
-        file, content.getBytes());
+    Files.write(file, content.getBytes());
   }
 }

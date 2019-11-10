@@ -65,7 +65,7 @@
                             <yamlFileLocation>src/main/resources/phones.yaml</yamlFileLocation>
                             <destinationFolder>samples/src/main/java/com/phone/generated</destinationFolder>
                             <generateDiagram>true</generateDiagram>
-                            <diagramDestination>samples/src/main/resources/</diagramDestination>
+                            <diagramDestination>samples/diagrams/</diagramDestination>
 
                         </configuration>
                     </execution>

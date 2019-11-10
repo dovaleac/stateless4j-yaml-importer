@@ -36,6 +36,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -112,7 +114,9 @@ public class MyMojo extends AbstractMojo {
         String diagramContent = new PlantUmlDiagramService()
             .generatePlantUmlDiagramTxt(stateMachine, initialState, true);
 
-        File pngFile = Paths.get(diagramDestination).resolve(diagramFileName).toFile();
+        Path diagramDestinationAsPath = Paths.get(diagramDestination);
+        Files.createDirectories(diagramDestinationAsPath);
+        File pngFile = diagramDestinationAsPath.resolve(diagramFileName).toFile();
         OutputStream png = new FileOutputStream(pngFile);
 
         SourceStringReader reader = new SourceStringReader(diagramContent);
