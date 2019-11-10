@@ -64,7 +64,7 @@ states:
       onEntry:
         - name: notifyCallIsRejected
           from: RejectCall
-#      initial: true
+      initial: true
     - name: CALL_ENTERING
       onEntry:
         - name: startRinging
