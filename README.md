@@ -161,17 +161,6 @@ The code to import the plugin in a `pom.xml` is something similar to:
     <version>${importer.version}</version>
     <executions>
         <execution>
-            <id>moves</id>
-            <goals>
-                <goal>generate</goal>
-            </goals>
-            <configuration>
-                <packageName>com.movements.generated</packageName>
-                <yamlFileLocation>src/main/resources/movements.yaml</yamlFileLocation>
-                <destinationFolder>samples/src/main/java/com/movements/generated</destinationFolder>
-            </configuration>
-        </execution>
-        <execution>
             <id>phones</id>
             <goals>
                 <goal>generate</goal>
@@ -195,7 +184,7 @@ The variables to include in the `configuration` tag are:
 | `packageName` | true |  | The package for the generated classes |
 | `yamlFileLocation` | true |  | The path to the YAML file |
 | `destinationFolder` | true |  | The path to the folder where the classes are to be generated |
-| `useTab` | false | `false` | If true, use tab in generated false. Else use spaces (see next variable) |
+| `useTab` | false | `false` | If true, use tab in generated files. Else use spaces (see next variable) |
 | `spacesForTab` | false | `2` | The number of spaces in each tab (if not using tab itself) |
 | `variableName` | false | `config` | The name of the config variable (not very useful to change) |
 | `generateDiagram` | false | `false` | Specifies whether to generate a state diagram |
@@ -219,8 +208,8 @@ possibilities when configuring the state machine, so here is an extensive list o
 | `triggerClassName` | true | `Trigger` | The name of the class that represents the triggers |
 | `delegateInterfaceName` | true | `AbstractDelegate` | The name of the class that represents the delegate interface |
 | `delegateVariableName` | true | `delegate` | The name of the variable that will represent the delegate in the generated code |
-| `stateMachineParameters[*]` | true | `SMT` | The list of parameters of the `StateMachine` class. For example, if the class was called `StateMachine<T, T2>`, the parameters would be `T` and `T2`. |
-| `delegateParameters[*]` | true | `DT` | The list of parameters, the same way, for the delegate interface. |
+| `stateMachineParameters[*]` | true | `StateMachineT` | The list of parameters of the `StateMachine` class. For example, if the class was called `StateMachine<T, T2>`, the parameters would be `T` and `T2`. |
+| `delegateParameters[*]` | true | `DelegateT` | The list of parameters, the same way, for the delegate interface. |
 | `states.className` | true | `State` | The name of the class that represents the states |
 | `states.elements[*]` | true | | The list of the states, comprising: |
 | `states.elements[*]name` | true | `STATE1` | The name of that state |
@@ -238,7 +227,7 @@ possibilities when configuring the state machine, so here is an extensive list o
 | `triggersWithParameters` | false | | In [stateless4j](https://github.com/oxo42/stateless4j), the triggers are allowed to have up to 3 parameters. So, for all the triggers that have parameters in the state machine, the user needs to specify: |
 | `triggersWithParameters[*]trigger` | true | `TRIGGER_X` | The name of the trigger |
 | `triggersWithParameters[*]params` | true | | The list of the params for that trigger (maximum 3; if 0 then the trigger wouldn't show up on this list, which is for triggers that have parameters) |
-| `triggersWithParameters[*]params.className` | true | `String` | The class of the parameter |
+| `triggersWithParameters[*]params.className` | true | `String` | The class of the parameter. It may be qualified and it may be parameterized |
 | `triggersWithParameters[*]params.variableName` | true | `stringParam` | The name of the param |
 | `eventLog` | false | | If this is activated, the specified method will be called in every transition no matter what state the machine has or what trigger has been received |
 | `eventLog.method` | true | `log` | Name of the method to be called in every transition |
