@@ -237,14 +237,15 @@ possibilities when configuring the state machine, so here is an extensive list o
 | `transitions[*]trigger` | true | `TRIGGER_X` | The trigger that causes the transition |
 | `triggersWithParameters` | false | | In [stateless4j](https://github.com/oxo42/stateless4j), the triggers are allowed to have up to 3 parameters. So, for all the triggers that have parameters in the state machine, the user needs to specify: |
 | `triggersWithParameters[*]trigger` | true | `TRIGGER_X` | The name of the trigger |
-| `triggersWithParameters[*]params` | true | | The list of the params for that trigger (maximum 3; if 0 then the trigger wouldn't show up on `triggersWithParameters`) |
+| `triggersWithParameters[*]params` | true | | The list of the params for that trigger (maximum 3; if 0 then the trigger wouldn't show up on this list, which is for triggers that have parameters) |
 | `triggersWithParameters[*]params.className` | true | `String` | The class of the parameter |
 | `triggersWithParameters[*]params.variableName` | true | `stringParam` | The name of the param |
 | `eventLog` | false | | If this is activated, the specified method will be called in every transition no matter what state the machine has or what trigger has been received |
 | `eventLog.method` | true | `log` | Name of the method to be called in every transition |
 
 Notes on the notation used:
-* `a[*]` means that `a` is a list of elements
+* `a` means that `a` is a single element
+* `a[*]` means that `a` is a list of elements. If there's no `a[*]b` element underneath, then `a` is a list of strings
 * `a[*]b` means that `a` is a list of elements, and it refers to the `b` field of each of those 
 elements
 * `c.d` means that `c` is a single element, and it refers to `c`'s `b` field 
@@ -257,25 +258,28 @@ abstract onEntry/onExit/eventLog methods, like
 [here](samples/src/main/java/com/phone/nongenerated/Phone.java) and use it like in this example: 
 
 ```
-    DelegateImpl delegate = new DelegateImpl(StateClassName.State1);
+public static final String MICHAEL = "michael";
+public static final String ANNA = "anna";
 
-    delegate.fireFly();
-    delegate.fireWalk(new ParameterizedClass("asd", 3.5), 0);
+Phone michael = new Phone(State.IDLE, false, MICHAEL);
+Phone anna = new Phone(State.IDLE, false, ANNA);
 
-    delegate.fireJump();
+List<PhoneEvent> expected = List.of(
+    new PhoneEvent(MICHAEL, "Call", "CALLING"),
+    new PhoneEvent(ANNA, "ReceiveCall", "CALL_ENTERING"),
+    new PhoneEvent(ANNA, "CallEntered", "RINGING"),
+    new PhoneEvent(ANNA, "AcceptCall", "SPEAKING"),
+    new PhoneEvent(MICHAEL, "CallAccepted", "SPEAKING")
+);
 
-    assertEquals(StateClassName.State4, delegate.getCurrentState());
-    String expectedHistory = "exit1\n" +
-        "exit31\n" +
-        "exit32\n" +
-        "entry22 asd 3.5 0\n";
-    assertEquals(expectedHistory, delegate.currentHistory());
+michael.fireCall(anna);
+assertIterableEquals(expected, EventLog.getPhoneEvents());
 ```
 
 This code:
-* creates a `Delegate` implementation
-* makes use of the _provided-by-the-plugin_ `fireTrigger()` methods
-* tests its correctness
+* creates two `Phone` implementations
+* makes use of the _provided-by-the-plugin_ `fireCall()` method
+* tests the events produced as a result
 
 ## Samples
 
