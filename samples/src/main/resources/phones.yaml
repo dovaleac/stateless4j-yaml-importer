@@ -1,0 +1,88 @@
+className: PhoneStateMachine
+triggerClassName: Trigger
+delegateInterfaceName: AbstractPhone
+delegateVariableName: phone
+transitions:
+  - from: IDLE
+    to: CALL_ENTERING
+    trigger: ReceiveCall
+  - from: CALL_ENTERING
+    to: RINGING
+    trigger: CallEntered
+  - from: RINGING
+    to: IDLE
+    trigger: RejectCall
+  - from: RINGING
+    to: RINGING
+    trigger: ReceiveCall
+  - from: RINGING
+    to: SPEAKING
+    trigger: AcceptCall
+  - from: SPEAKING
+    to: IDLE
+    trigger: FinishCall
+  - from: IDLE
+    to: CALLING
+    trigger: Call
+  - from: CALLING
+    to: SPEAKING
+    trigger: CallAccepted
+  - from: SPEAKING
+    to: SPEAKING
+    trigger: ReceiveCall
+  - from: CALLING
+    to: IDLE
+    trigger: CallRejected
+  - from: CALLING
+    to: IDLE
+    trigger: ReceiverIsBusy
+triggersWithParameters:
+  - trigger: Call
+    params:
+      - className: AbstractPhone
+        variableName: receiver
+  - trigger: AcceptCall
+    params:
+      - className: AbstractPhone
+        variableName: caller
+  - trigger: RejectCall
+    params:
+      - className: AbstractPhone
+        variableName: caller
+  - trigger: ReceiveCall
+    params:
+      - className: AbstractPhone
+        variableName: caller
+  - trigger: CallEntered
+    params:
+      - className: AbstractPhone
+        variableName: caller
+states:
+  className: State
+  elements:
+    - name: IDLE
+      onEntry:
+        - name: notifyCallIsRejected
+          from: RejectCall
+      initial: true
+    - name: CALL_ENTERING
+      onEntry:
+        - name: startRinging
+          from: ReceiveCall
+    - name: RINGING
+      onEntry:
+        - name: shouldICatchIt
+          from: CallEntered
+        - name: notifyReceiverIsBusy
+          from: ReceiveCall
+    - name: CALLING
+      onEntry:
+        - name: callReceiver
+    - name: SPEAKING
+      onEntry:
+        - name: notifyCallIsAccepted
+          from: AcceptCall
+        - name: notifyReceiverIsBusy
+          from: ReceiveCall
+eventLog:
+  method: log

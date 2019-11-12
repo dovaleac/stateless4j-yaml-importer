@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.github.dovaleac</groupId>
+        <artifactId>stateless4j-yaml-importer-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>samples</artifactId>
+    <properties>
+        <java.version>9</java.version>
+        <maven.compiler.target>9</maven.compiler.target>
+        <maven.compiler.source>9</maven.compiler.source>
+        <junit5.version>5.4.2</junit5.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.oxo42</groupId>
+            <artifactId>stateless4j</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit5.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit5.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.github.dovaleac</groupId>
+                <artifactId>stateless4j-yaml-importer</artifactId>
+                <version>${importer.version}</version>
+                <executions>
+                    <execution>
+                        <id>moves</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.movements.generated</packageName>
+                            <yamlFileLocation>src/main/resources/movements.yaml</yamlFileLocation>
+                            <destinationFolder>samples/src/main/java/com/movements/generated</destinationFolder>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>phones</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.phone.generated</packageName>
+                            <yamlFileLocation>src/main/resources/phones.yaml</yamlFileLocation>
+                            <destinationFolder>samples/src/main/java/com/phone/generated</destinationFolder>
+                            <generateDiagram>true</generateDiagram>
+                            <diagramDestination>samples/diagrams/</diagramDestination>
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
