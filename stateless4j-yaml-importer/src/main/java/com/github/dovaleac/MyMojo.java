@@ -63,7 +63,7 @@ public class MyMojo extends AbstractMojo {
   private boolean generateDiagram;
 
   @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.diagram.destination", required =
-      false, defaultValue = "src/main/resources/diagrams")
+      false, defaultValue = "diagrams")
   private String diagramDestination;
 
   @Parameter(property = "com.dovaleac.stateless4j.yamlimporter.diagram.fileName", required =
