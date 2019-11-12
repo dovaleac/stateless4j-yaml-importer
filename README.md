@@ -116,7 +116,7 @@ Seems understandable at a first sight? Well, obviously some further explanations
 will be given, but it's a straightforward way to generate this state machine, with all its 
 states, transitions and onEntry/onExit methods:
 
-![](samples/diagrams/states.png?raw=true)
+![If not loaded, download the code and open samples/diagrams/states.png](samples/diagrams/states.png?raw=true)
 
 ## Entities definition
 
@@ -199,7 +199,7 @@ The variables to include in the `configuration` tag are:
 | `generateDiagram` | false | `false` | Specifies whether to generate a state diagram |
 | `diagramDestination` | if generating diagram | `diagrams` | The path to the folder where the diagram is to be generated |
 | `diagramFileName` | if generating diagram | `states.png` | The name of the diagram file |
-| `initialState` | false | `Value` from YAML | The initial state for the diagram |
+| `initialState` | false | Value from YAML | The initial state for the diagram |
 
 After adding this to the `pom.xml`, in order to generate the files, run:
 ```
@@ -220,25 +220,25 @@ possibilities when configuring the state machine, so here is an extensive list o
 | `stateMachineParameters[*]` | true | `SMT` | the list of parameters of the `StateMachine` class. For example, if the class was called `StateMachine<T, T2>`, the parameters would be `T` and `T2`. |
 | `delegateParameters[*]` | true | `DT` | parameters, the same way, for the delegate interface. |
 | `states.className` | true | `State` | the name of the class that represents the states |
-| `states.elements[*]` | true | `|` the list of the states, comprising: |
+| `states.elements[*]` | true | | the list of the states, comprising: |
 | `states.elements[*]name` | true | `STATE1` | the name of the State class |
 | `states.elements[*]onExit[*]` | false | `leaveState1` | list of the methods to be called when leaving this state. |
-| `states.elements[*]onEntry[*]` | false | `|` list of the methods to be called when entering this state. |
+| `states.elements[*]onEntry[*]` | false | | list of the methods to be called when entering this state. |
 | `states.elements[*]onEntry[*]name` | true | `enterState1` | name of the method |
 | `states.elements[*]onEntry[*]from` | false | `TRIGGER_X` | trigger that initiated the transition to the state |
 | `states.elements[*]superState` | false | `STATE0` | the name of its super state, if any. |
 | `states.elements[*]initial` | false | `true` | Boolean indicating whether the state is the initial one (for diagrams) |
 | `states.elements[*]ignore[*]` | false | `TRIGGER_Y` | List of triggers to ignore when in this state (all the unexpected triggers cause exceptions) |
-| `transitions[*]` | true | `|` the list of transitions between states. For each transition, the following attributes need to be specified: |
+| `transitions[*]` | true | | the list of transitions between states. For each transition, the following attributes need to be specified: |
 | `transitions[*]from` | true | `STATE1` | initial state |
 | `transitions[*]to` | true | `STATE2` | new state |
 | `transitions[*]trigger` | true | `TRIGGER_X` | trigger to be received |
-| `triggersWithParameters` | false | `|` in [stateless4j](https://github.com/oxo42/stateless4j), the triggers are allowed to have up to 3 parameters. So, for all the triggers that have parameters in the state machine, the user needs to specify: |
+| `triggersWithParameters` | false | | in [stateless4j](https://github.com/oxo42/stateless4j), the triggers are allowed to have up to 3 parameters. So, for all the triggers that have parameters in the state machine, the user needs to specify: |
 | `triggersWithParameters[*]trigger` | true | `TRIGGER_X` | the name of the trigger |
-| `triggersWithParameters[*]params` | true | `|` list of the params for that trigger (maximum, 3)) |
+| `triggersWithParameters[*]params` | true | | list of the params for that trigger (maximum, 3)) |
 | `triggersWithParameters[*]params.className` | true | `String` | the class of the parameter |
 | `triggersWithParameters[*]params.variableName` | true | `stringParam` | the name of the param |
-| `eventLog` | false | `|` if this is activated, the specified method will be called in every transition |
+| `eventLog` | false | | if this is activated, the specified method will be called in every transition |
 | `eventLog.method` | true | `log` | name of the method to be called in every transition |
 
 Notes on the notation used:
