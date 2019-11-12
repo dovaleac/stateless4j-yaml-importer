@@ -116,7 +116,7 @@ Seems understandable at a first sight? Well, obviously some further explanations
 will be given, but it's a straightforward way to generate this state machine, with all its 
 states, transitions and onEntry/onExit methods:
 
-![Alt text](samples/diagrams/states.png?raw=true "Phone state machine")
+![](samples/diagrams/states.png?raw=true)
 
 ## Entities definition
 
