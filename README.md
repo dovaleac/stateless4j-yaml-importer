@@ -253,6 +253,8 @@ public static final String ANNA = "anna";
 Phone michael = new Phone(State.IDLE, false, MICHAEL);
 Phone anna = new Phone(State.IDLE, false, ANNA);
 
+michael.fireCall(anna);
+
 List<PhoneEvent> expected = List.of(
     new PhoneEvent(MICHAEL, "Call", "CALLING"),
     new PhoneEvent(ANNA, "ReceiveCall", "CALL_ENTERING"),
@@ -260,13 +262,13 @@ List<PhoneEvent> expected = List.of(
     new PhoneEvent(ANNA, "AcceptCall", "SPEAKING"),
     new PhoneEvent(MICHAEL, "CallAccepted", "SPEAKING")
 );
-
-michael.fireCall(anna);
 assertIterableEquals(expected, EventLog.getPhoneEvents());
 ```
 
 This code:
-* creates two `Phone` implementations
+* creates two `Phone` implementations (in the case of this plugin, it's advisable to contravene the 
+classic _use the parent class and not the implementation_ law, because the parent class has been 
+generated to make it easier for the implementor of the subclass)
 * makes use of the _provided-by-the-plugin_ `fireCall()` method
 * tests the events produced as a result
 
