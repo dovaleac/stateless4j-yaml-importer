@@ -1,10 +1,12 @@
 package com.github.dovaleac.gatherers.methods;
 
+import com.github.dovaleac.domain.ExecutionConfig;
 import com.github.dovaleac.domain.Method;
 import com.github.dovaleac.gatherers.methods.MethodGatherer;
 import com.github.dovaleac.jackson.JacksonService;
 import com.github.dovaleac.jackson.Param;
 import com.github.dovaleac.jackson.StateMachine;
+import com.github.dovaleac.substitution.Substitutions;
 import org.junit.Before;
 import org.junit.Test;
 

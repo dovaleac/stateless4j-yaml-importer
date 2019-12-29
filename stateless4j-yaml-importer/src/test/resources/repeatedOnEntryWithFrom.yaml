@@ -1,0 +1,48 @@
+className: StateMachineGenerator
+triggerClassName: Trigger
+delegateInterfaceName: Delegate
+delegateVariableName: delegate
+states:
+  className: State
+  elements:
+    - name: State0
+    - name: State1
+      onEntry:
+        - name: onEntry
+          from: TO_1
+      onExit:
+        - onExit
+    - name: State2
+      onEntry:
+        - name: onEntry
+          from: TO_2
+      onExit:
+        - onExit
+transitions:
+  - from: State0
+    to: State1
+    trigger: TO_1
+  - from: State2
+    to: State1
+    trigger: TO_1
+  - from: State0
+    to: State2
+    trigger: TO_2
+  - from: State1
+    to: State2
+    trigger: TO_2
+  - from: State2
+    to: State2
+    trigger: TO_2
+  - from: State1
+    to: State1
+    trigger: TO_1
+triggersWithParameters:
+  - trigger: TO_1
+    params:
+      - className: Integer
+        variableName: i
+  - trigger: TO_2
+    params:
+      - className: Integer
+        variableName: i

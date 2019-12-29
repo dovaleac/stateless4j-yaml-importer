@@ -2,7 +2,9 @@ package com.github.dovaleac.substitution;
 
 import com.github.dovaleac.FileToGenerate;
 import com.github.dovaleac.domain.ExecutionConfig;
+import com.github.dovaleac.domain.Method;
 import com.github.dovaleac.jackson.JacksonService;
+import com.github.dovaleac.jackson.Param;
 import com.github.dovaleac.jackson.StateMachine;
 import com.github.dovaleac.substitution.Substitutions;
 import com.github.dovaleac.substitution.VariableSubstitutionService;
@@ -10,8 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SubstitutionsTest {
 
@@ -125,4 +129,41 @@ public class SubstitutionsTest {
     assertEquals(expected, actual);
   }
 
+  @Test
+  public void sameMethodsWithFrom() throws Exception {
+    stateMachine = JacksonService.parseYamlFile(
+        new File("src/test/resources/repeatedOnEntryWithFrom.yaml"));
+
+    testMethods();
+  }
+
+  @Test
+  public void sameMethodsWithoutFrom() throws Exception {
+    stateMachine = JacksonService.parseYamlFile(
+        new File("src/test/resources/repeatedOnEntryWithoutFrom.yaml"));
+
+    testMethods();
+  }
+
+  void testMethods() throws Exception {
+    Substitutions.init(stateMachine, new ExecutionConfig("pack"));
+
+    Map<String, Method> onEntryMethods = Substitutions.getOnEntryMethods();
+
+    assertEquals(1, onEntryMethods.size());
+
+    Method method = onEntryMethods.get("onEntry");
+    assertEquals("onEntry", method.getName());
+    assertEquals(new Param("Integer", "i"),
+        method.getParams().findFirst().orElseThrow(Exception::new));
+
+
+    Map<String, Method> onExitMethods = Substitutions.getOnExitMethods();
+
+    assertEquals(1, onExitMethods.size());
+
+    Method onExitMethod = onExitMethods.get("onExit");
+    assertEquals("onExit", onExitMethod.getName());
+    assertEquals(0, onExitMethod.getParams().count());
+  }
 }

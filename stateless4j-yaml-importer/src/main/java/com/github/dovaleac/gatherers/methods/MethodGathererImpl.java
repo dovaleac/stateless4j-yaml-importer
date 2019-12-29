@@ -8,9 +8,9 @@ import com.github.dovaleac.jackson.Transition;
 import com.github.dovaleac.jackson.TriggerWithParameters;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MethodGathererImpl implements MethodGatherer {
@@ -41,7 +41,7 @@ public class MethodGathererImpl implements MethodGatherer {
           .map(
               onEntry -> {
                 if (onEntry.getFrom() == null) {
-                  Set<String> triggersThatMayProduceThisOnEntry =
+                  Set<TriggerWithParameters> triggersThatMayProduceThisOnEntry =
                       stateMachine.getStates().getElements().stream()
                           .filter(
                               state ->
@@ -57,24 +57,34 @@ public class MethodGathererImpl implements MethodGatherer {
                                           transition ->
                                               Objects.equals(transition.getTo(), state.getName())))
                           .map(Transition::getTrigger)
-                          .collect(Collectors.toSet());
+                          .flatMap(
+                              producerTrigger ->
+                                  stateMachine.getTriggersWithParameters().stream()
+                                      .filter(
+                                          trigger ->
+                                              Objects.equals(
+                                                  trigger.getTrigger(), producerTrigger)))
+                          .reduce(
+                              new HashSet<>(),
+                              (acc, twp) -> {
+                                if (acc.stream()
+                                    .noneMatch(
+                                        insertedTwp ->
+                                            insertedTwp.hasSameParamsWithoutNames(twp))) {
+                                  acc.add(twp);
+                                }
+                                return acc;
+                              },
+                              (t1, t2) -> t1);
 
                   if (triggersThatMayProduceThisOnEntry.size() == 1) {
-                    String producerTrigger =
-                        triggersThatMayProduceThisOnEntry.toArray()[0].toString();
                     TriggerWithParameters triggerWithParameters =
-                        stateMachine.getTriggersWithParameters().stream()
-                            .filter(
-                                trigger -> Objects.equals(trigger.getTrigger(), producerTrigger))
-                            .findAny()
-                            .orElse(null);
+                        (TriggerWithParameters) triggersThatMayProduceThisOnEntry.toArray()[0];
 
-                    if (triggerWithParameters == null) {
-                      return new Method(onEntry.getName());
-                    } else {
-                      return new Method(
-                          onEntry.getName(), producerTrigger, triggerWithParameters.getParams());
-                    }
+                    return new Method(
+                        onEntry.getName(),
+                        triggerWithParameters.getTrigger(),
+                        triggerWithParameters.getParams());
                   }
                   return new Method(onEntry.getName());
                 } else {

@@ -20,6 +20,8 @@ public class Substitutions {
   private static volatile Substitutions mInstance;
 
   private Map<String, Object> substitutions = new HashMap<>();
+  private Map<String, Method> onEntryMethods;
+  private Map<String, Method> onExitMethods;
 
   private final MethodGatherer methodGatherer = MethodGatherer.getInstance();
   private final StateConfigGatherer stateConfigGatherer = StateConfigGatherer.getInstance();
@@ -51,14 +53,15 @@ public class Substitutions {
 
   private void initPrivate(StateMachine stateMachine, ExecutionConfig executionConfig)
       throws ValidationException {
-    Map<String, Method> onEntryMethods =
-        methodGatherer
-            .gatherOnEntryMethods(stateMachine)
-            .collect(Collectors.toMap(Method::getName, m -> m));
-    Map<String, Method> onExitMethods =
-        methodGatherer
-            .gatherOnExitMethods(stateMachine)
-            .collect(Collectors.toMap(Method::getName, m -> m));
+    onEntryMethods = methodGatherer
+        .gatherOnEntryMethods(stateMachine)
+        .distinct()
+        .collect(Collectors.toMap(Method::getName, m -> m, (m1, m2) -> m1));
+
+    onExitMethods = methodGatherer
+        .gatherOnExitMethods(stateMachine)
+        .distinct()
+        .collect(Collectors.toMap(Method::getName, m -> m));
 
     String tab = executionConfig.getTab();
     String variableName = executionConfig.getVariableName();
@@ -97,5 +100,13 @@ public class Substitutions {
     return stateMachineParameters.isEmpty()
         ? ""
         : "<" + String.join(", ", stateMachineParameters) + ">";
+  }
+
+  public static Map<String, Method> getOnEntryMethods() {
+    return getInstance().onEntryMethods;
+  }
+
+  public static Map<String, Method> getOnExitMethods() {
+    return getInstance().onExitMethods;
   }
 }

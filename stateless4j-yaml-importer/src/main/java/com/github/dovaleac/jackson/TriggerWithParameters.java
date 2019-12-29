@@ -41,6 +41,20 @@ public class TriggerWithParameters {
     this.params = params;
   }
 
+  public boolean hasSameParamsWithoutNames(TriggerWithParameters other) {
+    if (params.size() != other.params.size()) {
+      return false;
+    }
+
+    for (int i = 0; i < params.size(); i++) {
+      if (!Objects.equals(params.get(i).getClassName(), other.params.get(i).getClassName())) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   public String asFireMethod(String fire, String tab, String triggerClassName) {
     String template =
         "${tab}public void ${fire}${trigger}(${paramsWithClasses}) {\n"

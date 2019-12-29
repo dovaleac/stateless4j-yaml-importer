@@ -60,8 +60,8 @@ public class PlantUmlDiagramService implements DiagramService {
               String stateName = state.getName();
               List<String> onExitList = state.getOnExit();
               if (!onExitList.isEmpty()) {
-                stringBuilder.append(state).append(": ").append("ON EXIT METHODS\n");
-                return onExitList.stream().map(onExit -> stateName + ": " + onExit);
+                stringBuilder.append(stateName).append(": ").append("ON EXIT METHODS\n");
+                return onExitList.stream().map(onExit -> stateName + ": " + onExit + "()");
               } else {
                 return Stream.of();
               }
